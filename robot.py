@@ -2,6 +2,7 @@ import wpilib
 import wpilib.drive
 import rev
 import phoenix5
+from buttons import steering_wheel
 # from ClimbSys import ElevationSys
 
 class TestRobot(wpilib.TimedRobot):
@@ -28,11 +29,15 @@ class TestRobot(wpilib.TimedRobot):
 
         # self.elevation = ElevationSys()
 
-        self.r_encoder = wpilib.Encoder(0, 1)
+        self.r_encoder = wpilib.Encoder(4, 5)
         self.l_encoder = wpilib.Encoder(2, 3)
 
         self.pulsos_p_m_r = 4753
         self.pulsos_p_m_l = 2839
+
+        wpilib.SmartDashboard.putNumber('Encoder left', self.l_encoder.get())
+        wpilib.SmartDashboard.putNumber('Encoder right' , self.r_encoder.get())
+
 
     def robotPeriodic(self):
         self.left_pulses = self.l_encoder.get()
@@ -54,16 +59,26 @@ class TestRobot(wpilib.TimedRobot):
         self.robot_drive.setSafetyEnabled(True)
         # self.elevation
 
-    def axis(self):
-        if self.joystick.getRawAxis(3) > 0:
-            return -self.joystick.getRawAxis(3)
-        elif self.joystick.getRawAxis(2) > 0:
-            return self.joystick.getRawAxis(2)
-        return 0      
+    def axis_X(self):
+        if self.joystick.getRawButton(steering_wheel["rb"]):
+            return 1.0
+        
+        elif self.joystick.getRawButton(steering_wheel["lb"]):
+            return -1.0
+        
+        elif self.joystick.getRawButton(steering_wheel["a"]):
+            return 0.3
+        
+        elif self.joystick.getRawButton(steering_wheel["x"]):
+            return -0.3
+        
+        else :
+            return 0
+        
 
     def teleopPeriodic(self):
         # Get joystick axis values for movement and rotation
-        move_value = self.axis()  # Y-axis
+        move_value = self.axis_X()  # Y-axis
         rotate_value = self.joystick.getRawAxis(0)  # X-axis
 
         # Use arcade drive to move the robot
