@@ -43,6 +43,8 @@ class TestRobot(wpilib.TimedRobot):
         self.chooser = wpilib.SendableChooser()
         self.defaultController_option = "dois controles"
         self.steering_wheel_option = "volante"
+        wpilib.SmartDashboard.putNumber("Encoder Left", 0)
+        wpilib.SmartDashboard.putNumber("Encoder Right", 0)
 
     def robotPeriodic(self):
         self.left_pulses = self.l_encoder.get()
@@ -50,8 +52,10 @@ class TestRobot(wpilib.TimedRobot):
         self.left_position = self.left_pulses /self.pulsos_p_m_l
         self.right_position = self.right_pulses /self.pulsos_p_m_r
         
-        print("left position:", self.left_pulses)
-        print("right position:", self.right_pulses)
+        #print("left position:", self.left_pulses)
+        #print("right position:", self.right_pulses)
+        wpilib.SmartDashboard.putNumber("Encoder Left", self.left_pulses)
+        wpilib.SmartDashboard.putNumber("Encoder Right", self.right_pulses)
 
     def autonomousInit(self):
         pass
