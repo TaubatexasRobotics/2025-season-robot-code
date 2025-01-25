@@ -58,10 +58,10 @@ g_xbox_360 = {
     "right-x-stick": 4,
 }
 
-# steering wheel controller
+# Generic steering wheel controller (generic Xbox 360 controller)
 
 steering_wheel = {
-    "turn axis": 0,
+    "turn-axis": 0,
     "a" : 3,
     "b" : 2,
     "y" : 1,
@@ -73,5 +73,4 @@ steering_wheel = {
     "r3" : 12,
     "l3" : 11,
     "back" : 9,
-
 }
