@@ -2,6 +2,7 @@ import wpilib
 import wpilib.drive
 import rev
 import phoenix5
+from buttons import steering_wheel, dualshock4
 # from ClimbSys import ElevationSys
 
 class TestRobot(wpilib.TimedRobot):
@@ -23,16 +24,27 @@ class TestRobot(wpilib.TimedRobot):
         # # Set up differential drive for arcade driving
         self.robot_drive = wpilib.drive.DifferentialDrive(self.left, self.right)
 
-        # Initialize joystick for controlling the robot
-        self.joystick = wpilib.Joystick(0)
-
+        # Initialize steering_wheel for controlling the robot
+        self.steering_wheel = wpilib.Joystick(0)
+        self.dualshock_4 = wpilib.Joystick(1)
         # self.elevation = ElevationSys()
 
-        self.r_encoder = wpilib.Encoder(0, 1)
+        self.r_encoder = wpilib.Encoder(4, 5)
         self.l_encoder = wpilib.Encoder(2, 3)
 
         self.pulsos_p_m_r = 4753
         self.pulsos_p_m_l = 2839
+
+        self.left_climber = phoenix5.WPI_VictorSPX(1)
+        self.right_climber = phoenix5.WPI_VictorSPX(2)
+        self.right_climber.setInverted(True)
+
+        self.climber = wpilib.MotorControllerGroup(self.left_climber,self.right_climber)
+        self.chooser = wpilib.SendableChooser()
+        self.defaultController_option = "dois controles"
+        self.steering_wheel_option = "volante"
+        wpilib.SmartDashboard.putNumber("Encoder Left", 0)
+        wpilib.SmartDashboard.putNumber("Encoder Right", 0)
 
     def robotPeriodic(self):
         self.left_pulses = self.l_encoder.get()
@@ -40,8 +52,10 @@ class TestRobot(wpilib.TimedRobot):
         self.left_position = self.left_pulses /self.pulsos_p_m_l
         self.right_position = self.right_pulses /self.pulsos_p_m_r
         
-        print("left position:", self.left_pulses)
-        print("right position:", self.right_pulses)
+        #print("left position:", self.left_pulses)
+        #print("right position:", self.right_pulses)
+        wpilib.SmartDashboard.putNumber("Encoder Left", self.left_pulses)
+        wpilib.SmartDashboard.putNumber("Encoder Right", self.right_pulses)
 
     def autonomousInit(self):
         pass
@@ -54,19 +68,32 @@ class TestRobot(wpilib.TimedRobot):
         self.robot_drive.setSafetyEnabled(True)
         # self.elevation
 
-    def axis(self):
-        if self.joystick.getRawAxis(3) > 0:
-            return -self.joystick.getRawAxis(3)
-        elif self.joystick.getRawAxis(2) > 0:
-            return self.joystick.getRawAxis(2)
-        return 0      
+    def axis_X(self):
+        if self.steering_wheel.getRawButton(steering_wheel["rb"]):
+            return 1.0
+        elif self.steering_wheel.getRawButton(steering_wheel["lb"]):
+            return -1.0
+        elif self.steering_wheel.getRawButton(steering_wheel["a"]):
+            return 0.3
+        elif self.steering_wheel.getRawButton(steering_wheel["x"]):
+            return -0.3        
+        else:
+            return 0
 
+    def climberControl (self):
+        if self.dualshock_4.getRawButton(dualshock4["l1"]):
+            return -1.0
+        elif self.dualshock_4.getRawButton(dualshock4["r1"]):
+            return 1.0
+        else:
+            return 0
+        
     def teleopPeriodic(self):
-        # Get joystick axis values for movement and rotation
-        move_value = self.axis()  # Y-axis
-        rotate_value = self.joystick.getRawAxis(0)  # X-axis
+        # Get steering_wheel axis values for movement and rotation
+        move_value = self.axis_X()  # Y-axis
+        rotate_value = self.steering_wheel.getRawAxis(steering_wheel["turn-axis"])  # X-axis
 
         # Use arcade drive to move the robot
         self.robot_drive.arcadeDrive(move_value, rotate_value)
-
-        # self.elevation.teleop()
+        
+        self.climber.set(self.climberControl())
