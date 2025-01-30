@@ -96,4 +96,9 @@ class TestRobot(wpilib.TimedRobot):
         # Use arcade drive to move the robot
         self.robot_drive.arcadeDrive(move_value, rotate_value)
         
-        self.climber.set(self.climberControl())
+
+        if self.dualshock_4.getRawButton(3):
+            self.right_climber.set(self.dualshock_4.getRawAxis(5))
+            self.left_climber.set(self.dualshock_4.getRawAxis(1))
+        else:
+            self.climber.set(self.climberControl())
