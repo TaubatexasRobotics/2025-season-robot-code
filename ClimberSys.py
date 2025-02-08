@@ -30,5 +30,5 @@ class Climber():
 
     def individualControl(self):
 
-        self.right_climber.set(self.dualshock_4.getRawAxis(5))
-        self.left_climber.set(self.dualshock_4.getRawAxis(1))
+        self.right_climber.set((self.dualshock_4.getRawAxis(5)*-1))
+        self.left_climber.set((self.dualshock_4.getRawAxis(1)*-1))

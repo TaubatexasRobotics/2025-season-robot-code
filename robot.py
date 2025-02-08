@@ -2,6 +2,7 @@ import wpilib
 import wpilib.drive
 from ClimberSys import Climber
 from Drivetrain import driveTrain
+from buttons import dualshock4
 
 # from ClimbSys import ElevationSys
 
@@ -10,6 +11,8 @@ class TestRobot(wpilib.TimedRobot):
 
         self.climber = Climber()
         self.drivetrain = driveTrain()
+
+        self.dualshock_4 = wpilib.Joystick(1)
 
         
         # self.elevation = ElevationSys()
@@ -50,5 +53,11 @@ class TestRobot(wpilib.TimedRobot):
         
     def teleopPeriodic(self):
         self.drivetrain.arcadeDrive()
-        self.climber.climberControl()
+
+        if self.dualshock_4.getRawButton(dualshock4["circle"]):
+            self.climber.individualControl()
+        else:
+            self.climber.climberControl()
+        
+
         
