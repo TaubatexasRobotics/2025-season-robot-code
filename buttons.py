@@ -5,7 +5,9 @@ dualshock4 = {
     "circle": 3,
     "triangle": 4,
     "l1": 5,
+    "lb": 5,
     "r1": 6,
+    "rb": 6,
     "l2": 7,
     "r2": 8,
     "share": 9,
@@ -18,6 +20,12 @@ dualshock4 = {
     "pov-down": 180,
     "pov-left": 270,
     "pov-right": 90,
+    "left-x-axis": 0,
+    "left-y-axis": 1,
+    "right-x-axis": 2,
+    "right-y-axis": 5,
+    "left-trigger-axis": 3, 
+    "right-trigger-axis": 4 
 }
 
 # Generic Nintendo Switch Pro Controller
@@ -52,8 +60,8 @@ g_xbox_360 = {
     "pov-right": 90,
     "left-x-stick": 0,
     "left-y-stick": 1,
-    "lt": 2,
-    "rt": 3,
+    "left-trigger-axis": 2, 
+    "right-trigger-axis": 3, 
     "right-y-stick": 5,
     "right-x-stick": 4,
 }

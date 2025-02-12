@@ -1,7 +1,7 @@
 import wpilib
 import wpilib.drive
 import phoenix5
-from buttons import steering_wheel
+from buttons import dualshock4 as ds_keymap
 
 class driveTrain():
     def __init__(self):
@@ -22,16 +22,18 @@ class driveTrain():
         # # Set up differential drive for arcade driving
         self.robot_drive = wpilib.drive.DifferentialDrive(self.left, self.right)
 
-        self.steering_wheel = wpilib.Joystick(0)
+        self.dualshock4 = wpilib.Joystick(0)
     
+    
+
     def axis_X(self):
-        if self.steering_wheel.getRawButton(steering_wheel["rb"]):
+        if self.dualshock4.getRawAxis(ds_keymap[""]):
             return 1.0
-        elif self.steering_wheel.getRawButton(steering_wheel["lb"]):
+        elif self.dualshock4.getRawButton(ds_keymap["lb"]):
             return -1.0
-        elif self.steering_wheel.getRawButton(steering_wheel["a"]):
+        elif self.dualshock4.getRawButton(ds_keymap["a"]):
             return 0.3
-        elif self.steering_wheel.getRawButton(steering_wheel["x"]):
+        elif self.dualshock4.getRawButton(ds_keymap["x"]):
             return -0.3        
         else:
             return 0
@@ -42,8 +44,12 @@ class driveTrain():
 
     def arcadeDrive(self):
         # Get steering_wheel axis values for movement and rotation
-        move_value = self.axis_X()  # Y-axis
-        rotate_value = self.steering_wheel.getRawAxis(steering_wheel["turn-axis"])  # X-axis
+
+        move_value = -(self.dualshock4.getRawAxis(ds_keymap["left-trigger-axis"]) -
+             self.dualshock4.getRawAxis(ds_keymap["right-trigger-axis"]) )
+
+        # move_value = self.axis_X()  # Y-axis
+        rotate_value = -self.dualshock4.getRawAxis(ds_keymap["left-x-axis"])  # X-axis
 
         # Use arcade drive to move the robot
         self.robot_drive.arcadeDrive(move_value, rotate_value)

@@ -1,8 +1,7 @@
 import wpilib
 import phoenix5
 import wpilib.drive
-from buttons import dualshock4
-
+from buttons import g_xbox_360
 
 class Climber():
     def __init__(self):
@@ -14,21 +13,26 @@ class Climber():
 
         self.climber = wpilib.MotorControllerGroup(self.left_climber,self.right_climber)
 
-        self.dualshock_4 = wpilib.Joystick(1)
+        self.second_controller = wpilib.Joystick(1)
 
     def climberControl (self):
-        if self.dualshock_4.getRawButton(dualshock4["l1"]):
-            self.climber.set(-1.0)
+        isRbPressed = self.second_controller.getRawButton(g_xbox_360["rb"])
+        isLbPressed = self.second_controller.getRawButton(g_xbox_360["lb"])
 
-        elif self.dualshock_4.getRawButton(dualshock4["r1"]):
-            self.climber.set(1.0)
+        if isLbPressed or isRbPressed:
+            self.individualControl()
         else:
-            self.climber.set(0)
-        
-        
+            self.climbCombined()
 
+    def climbCombined(self):
+        rt_value = self.second_controller.getRawAxis(g_xbox_360['right-trigger-axis'])
+        lt_value = self.second_controller.getRawAxis(g_xbox_360['left-trigger-axis'])
 
+        combined_value =  rt_value - lt_value
+        self.climber.set(combined_value)
+        
     def individualControl(self):
-
-        self.right_climber.set((self.dualshock_4.getRawAxis(5)*-1))
-        self.left_climber.set((self.dualshock_4.getRawAxis(1)*-1))
+        if self.second_controller.getRawButton(g_xbox_360["rb"]):
+            self.right_climber.set(-self.second_controller.getRawAxis(g_xbox_360["left-y-stick"]))
+        if self.second_controller.getRawButton(g_xbox_360["lb"]):
+            self.left_climber.set(-self.second_controller.getRawAxis(g_xbox_360["left-y-stick"]))
