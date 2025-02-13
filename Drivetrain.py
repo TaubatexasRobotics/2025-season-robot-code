@@ -26,18 +26,9 @@ class driveTrain():
     
     
 
-    def axis_X(self):
-        if self.dualshock4.getRawAxis(ds_keymap[""]):
-            return 1.0
-        elif self.dualshock4.getRawButton(ds_keymap["lb"]):
-            return -1.0
-        elif self.dualshock4.getRawButton(ds_keymap["a"]):
-            return 0.3
-        elif self.dualshock4.getRawButton(ds_keymap["x"]):
-            return -0.3        
-        else:
-            return 0
-        
+    def slowtrain(self):
+        if self.dualshock4.getRawButton(ds_keymap[])
+
     def safetyProgram(self):
         self.robot_drive.setExpiration(0.1)
         self.robot_drive.setSafetyEnabled(True)
@@ -53,3 +44,5 @@ class driveTrain():
 
         # Use arcade drive to move the robot
         self.robot_drive.arcadeDrive(move_value, rotate_value)
+
+        
