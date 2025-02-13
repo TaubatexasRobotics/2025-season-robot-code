@@ -53,7 +53,6 @@ class TestRobot(wpilib.TimedRobot):
         
     def teleopPeriodic(self):
         self.drivetrain.arcadeDrive()
-        self.climber.individualControl()
         self.climber.climberControl()
         
 
