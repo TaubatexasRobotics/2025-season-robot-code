@@ -3,6 +3,7 @@ import wpilib.drive
 from ClimberSys import Climber
 from Drivetrain import driveTrain
 from buttons import dualshock4, g_xbox_360
+from Intake import Intake
 
 # from ClimbSys import ElevationSys
 
@@ -11,9 +12,12 @@ class TestRobot(wpilib.TimedRobot):
 
         self.climber = Climber()
         self.drivetrain = driveTrain()
+        self.intake = Intake()
 
-        self.dualshock4 = wpilib.Joystick(1)
-        self.xbox_360 = wpilib.Joystick(0)
+        self.dualshock4 = wpilib.Joystick(0)
+        self.xbox_360 = wpilib.Joystick(1)
+
+         
         
         # self.elevation = ElevationSys()
 
@@ -50,10 +54,18 @@ class TestRobot(wpilib.TimedRobot):
     def teleopInit(self):
         self.drivetrain.safetyProgram()
 
+        self.intake.intake_zera_encoder()
+        
         
     def teleopPeriodic(self):
-        self.drivetrain.arcadeDrive()
-        self.climber.climberControl()
         
+        if self.dualshock4.getRawButton(dualshock4["cross"]):
+            self.drivetrain.slowdrive()
+        else:
+            self.drivetrain.arcadeDrive()
+        
+        self.climber.climberControl()
+
+        self.intake.intake_control()
 
         

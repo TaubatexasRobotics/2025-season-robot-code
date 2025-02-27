@@ -24,10 +24,6 @@ class driveTrain():
 
         self.dualshock4 = wpilib.Joystick(0)
     
-    
-
-    def slowtrain(self):
-        if self.dualshock4.getRawButton(ds_keymap[])
 
     def safetyProgram(self):
         self.robot_drive.setExpiration(0.1)
@@ -45,4 +41,16 @@ class driveTrain():
         # Use arcade drive to move the robot
         self.robot_drive.arcadeDrive(move_value, rotate_value)
 
+    def slowdrive(self):
+        # Get steering_wheel axis values for movement and rotation
+
+        move_value = -(self.dualshock4.getRawAxis(ds_keymap["left-trigger-axis"]) -
+             self.dualshock4.getRawAxis(ds_keymap["right-trigger-axis"]) )
+
+        # move_value = self.axis_X()  # Y-axis
+        rotate_value = -self.dualshock4.getRawAxis(ds_keymap["left-x-axis"])  # X-axis
+
+        # Use arcade drive to move the robot
+        self.robot_drive.arcadeDrive((move_value/2.6), (rotate_value/1.5))
+        print(move_value/1.5,rotate_value/2)
         
