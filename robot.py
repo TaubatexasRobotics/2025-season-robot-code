@@ -2,6 +2,7 @@ import wpilib
 import wpilib.drive
 import constants
 
+from camera import AprilTagCamera
 from climber import Climber
 from drivetrain import Drivetrain
 from buttons import dualshock4, g_xbox_360
@@ -19,8 +20,10 @@ class TestRobot(wpilib.TimedRobot):
         self.xbox_360 = wpilib.Joystick(constants.XBOX_360_CONTROLLER_ID)
         
         self.chooser = wpilib.SendableChooser()
-        self.default_controller_option = "dois controles"
-        self.steering_wheel_option = "volante"
+        self.default_controller_option = constants.SENDABLE_CHOOSER_TWO_JOYSTICKS_OPTION
+        self.steering_wheel_option = constants.SENDABLE_CHOOSER_STEERING_WHEEL_OPTION
+
+        self.camera = AprilTagCamera(constants.PHOTONVISION_CAMERA_NAME) 
 
     def robotPeriodic(self):
         self.drivetrain.updateEncoders()
