@@ -1,17 +1,18 @@
 import wpilib
 import rev
 from wpimath.controller import PIDController
+import constants
 
 class AlgaeIntake:
     def __init__(self):
-        self.intake_motion = rev.SparkMax(50, rev.SparkLowLevel.MotorType.kBrushless)
-        self.intake_rotation = rev.SparkMax(52, rev.SparkLowLevel.MotorType.kBrushless)
+        self.intake_motion = rev.SparkMax(constants.INTAKE_MOTION_ID, rev.SparkLowLevel.MotorType.kBrushless)
+        self.intake_rotation = rev.SparkMax(constants.INTAKE_ROTATION_ID, rev.SparkLowLevel.MotorType.kBrushless)
 
         self.encoder_virtual = 0
 
         self.limit_switch = wpilib.DigitalInput(4)
 
-        self.pid = PIDController(0.02,0.01,0)
+        self.pid = PIDController(*constants.PID_INTAKE)
 
         self.pid.setTolerance(1,1)
 

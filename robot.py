@@ -1,18 +1,22 @@
 import wpilib
 import wpilib.drive
+import constants
+
 from climber import Climber
 from drivetrain import Drivetrain
 from buttons import dualshock4, g_xbox_360
-from intake import Intake
+from algae_intake import AlgaeIntake
+from coral_intake import CoralIntake
 
 class TestRobot(wpilib.TimedRobot):
     def robotInit(self):
         self.climber = Climber()
         self.drivetrain = Drivetrain()
-        self.intake = Intake()
+        self.intake = AlgaeIntake()
+        self.coral_intake = CoralIntake()
 
-        self.dualshock4 = wpilib.Joystick(0)
-        self.xbox_360 = wpilib.Joystick(1)
+        self.dualshock4 = wpilib.Joystick(constants.DUALSHOCK4_ID)
+        self.xbox_360 = wpilib.Joystick(constants.XBOX_360_CONTROLLER_ID)
         
         self.chooser = wpilib.SendableChooser()
         self.default_controller_option = "dois controles"
@@ -56,6 +60,13 @@ class TestRobot(wpilib.TimedRobot):
             self.intake.intake_absorb()
         else:
             self.intake.deactivate_intake()
+        
+        if self.xbox_360.getRawButton(g_xbox_360["lb"]):
+            self.coral_intake.enable()
+        elif self.xbox_360.getRawButton(g_xbox_360["rb"]):
+            self.coral_intake.invert()
+        else:
+            self.coral_intake.disable()
 
         # Intake control position
         if self.xbox_360.getRawButtonPressed(g_xbox_360["y"]):
