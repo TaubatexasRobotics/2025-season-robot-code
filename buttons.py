@@ -67,7 +67,6 @@ g_xbox_360 = {
 }
 
 # Generic steering wheel controller (generic Xbox 360 controller)
-
 steering_wheel = {
     "turn-axis": 0,
     "a" : 3,

@@ -1,11 +1,10 @@
 import wpilib
 import wpilib.drive
 import phoenix5
-from buttons import dualshock4 as ds_keymap
 
-class driveTrain():
+class Drivetrain:
     def __init__(self):
-    # Initialize motors using CAN IDs
+        # Initialize motors using CAN IDs
         self.left_front_motor = phoenix5.WPI_VictorSPX(4)
         self.left_rear_motor = phoenix5.WPI_VictorSPX(3) 
         # self.left_rear_motor.setInverted(True)
@@ -19,38 +18,44 @@ class driveTrain():
 
         self.right.setInverted(True)
 
-        # # Set up differential drive for arcade driving
+        # Setup differential drive for arcade drive
         self.robot_drive = wpilib.drive.DifferentialDrive(self.left, self.right)
+        self.r_encoder = wpilib.Encoder(4, 5)
+        self.l_encoder = wpilib.Encoder(2, 3)
 
-        self.dualshock4 = wpilib.Joystick(0)
-    
+        wpilib.SmartDashboard.putNumber("Encoder Left", 0)
+        wpilib.SmartDashboard.putNumber("Encoder Right", 0)
 
-    def safetyProgram(self):
+    def updateEncoders(self) -> None:
+        self.pulsos_p_m_r = 4753
+        self.pulsos_p_m_l = 2839
+        self.left_pulses = self.l_encoder.get()
+        self.right_pulses = self.r_encoder.get()
+        self.left_position = self.left_pulses / self.pulsos_p_m_l
+        self.right_position = self.right_pulses / self.pulsos_p_m_r
+        
+        wpilib.SmartDashboard.putNumber("Encoder Left", self.left_pulses)
+        wpilib.SmartDashboard.putNumber("Encoder Right", self.right_pulses)
+
+    def safetyMode(self):
         self.robot_drive.setExpiration(0.1)
         self.robot_drive.setSafetyEnabled(True)
 
-    def arcadeDrive(self):
+    def arcadeDrive(self, fwd_left, fwd_right, turn):
         # Get steering_wheel axis values for movement and rotation
-
-        move_value = -(self.dualshock4.getRawAxis(ds_keymap["left-trigger-axis"]) -
-             self.dualshock4.getRawAxis(ds_keymap["right-trigger-axis"]) )
+        move_value = -(fwd_left - fwd_right)
 
         # move_value = self.axis_X()  # Y-axis
-        rotate_value = -self.dualshock4.getRawAxis(ds_keymap["left-x-axis"])  # X-axis
 
         # Use arcade drive to move the robot
-        self.robot_drive.arcadeDrive(move_value, rotate_value)
+        self.robot_drive.arcadeDrive(move_value, turn)
 
-    def slowdrive(self):
+    def slowdrive(self, fwd_left, fwd_right, turn):
         # Get steering_wheel axis values for movement and rotation
-
-        move_value = -(self.dualshock4.getRawAxis(ds_keymap["left-trigger-axis"]) -
-             self.dualshock4.getRawAxis(ds_keymap["right-trigger-axis"]) )
+        move_value = -(fwd_left - fwd_right)
 
         # move_value = self.axis_X()  # Y-axis
-        rotate_value = -self.dualshock4.getRawAxis(ds_keymap["left-x-axis"])  # X-axis
 
         # Use arcade drive to move the robot
-        self.robot_drive.arcadeDrive((move_value/2.6), (rotate_value/1.5))
-        print(move_value/1.5,rotate_value/2)
-        
+        self.robot_drive.arcadeDrive((move_value/2.6), (turn/1.5))
+        print(move_value/1.5, turn/2)

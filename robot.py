@@ -1,49 +1,25 @@
 import wpilib
 import wpilib.drive
-from ClimberSys import Climber
-from Drivetrain import driveTrain
+from climber import Climber
+from drivetrain import Drivetrain
 from buttons import dualshock4, g_xbox_360
-from Intake import Intake
-
-# from ClimbSys import ElevationSys
+from intake import Intake
 
 class TestRobot(wpilib.TimedRobot):
     def robotInit(self):
-
         self.climber = Climber()
-        self.drivetrain = driveTrain()
+        self.drivetrain = Drivetrain()
         self.intake = Intake()
 
         self.dualshock4 = wpilib.Joystick(0)
         self.xbox_360 = wpilib.Joystick(1)
-
-         
-        
-        # self.elevation = ElevationSys()
-
-        self.r_encoder = wpilib.Encoder(4, 5)
-        self.l_encoder = wpilib.Encoder(2, 3)
-
-        self.pulsos_p_m_r = 4753
-        self.pulsos_p_m_l = 2839
-
         
         self.chooser = wpilib.SendableChooser()
-        self.defaultController_option = "dois controles"
+        self.default_controller_option = "dois controles"
         self.steering_wheel_option = "volante"
-        wpilib.SmartDashboard.putNumber("Encoder Left", 0)
-        wpilib.SmartDashboard.putNumber("Encoder Right", 0)
 
     def robotPeriodic(self):
-        self.left_pulses = self.l_encoder.get()
-        self.right_pulses = self.r_encoder.get()
-        self.left_position = self.left_pulses /self.pulsos_p_m_l
-        self.right_position = self.right_pulses /self.pulsos_p_m_r
-        
-        #print("left position:", self.left_pulses)
-        #print("right position:", self.right_pulses)
-        wpilib.SmartDashboard.putNumber("Encoder Left", self.left_pulses)
-        wpilib.SmartDashboard.putNumber("Encoder Right", self.right_pulses)
+        self.drivetrain.updateEncoders()
 
     def autonomousInit(self):
         pass
@@ -52,20 +28,49 @@ class TestRobot(wpilib.TimedRobot):
         pass
 
     def teleopInit(self):
-        self.drivetrain.safetyProgram()
-
-        self.intake.intake_zera_encoder()
-        
+        self.drivetrain.safetyMode()
+        self.intake.reset_intake()
         
     def teleopPeriodic(self):
-        
         if self.dualshock4.getRawButton(dualshock4["cross"]):
-            self.drivetrain.slowdrive()
+            self.drivetrain.slowdrive(
+                self.dualshock4.getRawAxis(dualshock4["left-trigger-axis"]),
+                self.dualshock4.getRawAxis(dualshock4["right-trigger-axis"]),
+                -self.dualshock4.getRawAxis(dualshock4["left-x-axis"]) 
+            )
         else:
-            self.drivetrain.arcadeDrive()
+            self.drivetrain.arcadeDrive(
+                self.dualshock4.getRawAxis(dualshock4["left-trigger-axis"]),
+                self.dualshock4.getRawAxis(dualshock4["right-trigger-axis"]),
+                -self.dualshock4.getRawAxis(dualshock4["left-x-axis"]) 
+            )
         
-        self.climber.climberControl()
+        self.climber.climberControl(
+            self.xbox_360.getRawAxis(g_xbox_360['left-trigger-axis']),
+            self.xbox_360.getRawAxis(g_xbox_360['right-trigger-axis']),
+        )
 
-        self.intake.intake_control()
+        if self.xbox_360.getRawButton(g_xbox_360["x"]):
+            self.intake.intake_expel()
+        elif self.xbox_360.getRawButton(g_xbox_360["a"]): 
+            self.intake.intake_absorb()
+        else:
+            self.intake.deactivate_intake()
 
-        
+        # Intake control position
+        if self.xbox_360.getRawButtonPressed(g_xbox_360["y"]):
+            self.intake.setControlVal(2)
+            
+        if self.xbox_360.getRawButtonPressed(g_xbox_360["b"]):
+            self.intake.setControlVal(1)
+            
+        if self.xbox_360.getRawButtonPressed(g_xbox_360["press_left_stick"]):
+            self.intake.setControlVal(0)
+           
+        match self.intake.getControlVal():
+            case 0:
+                self.intake.intake_reset_position()
+            case 1:
+                self.intake.intake_receiving_position()
+            case 2:
+                self.intake.intake_removing_position()
