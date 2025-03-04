@@ -1,6 +1,6 @@
 # WPILib default config
 tests/
-.wpilib
+.wpilib/
 
 # Those were created when running `python -m robotpy sim`
 networktables.json
