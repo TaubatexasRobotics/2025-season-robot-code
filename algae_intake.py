@@ -10,7 +10,7 @@ class AlgaeIntake:
 
         self.encoder_virtual = 0
 
-        self.limit_switch = wpilib.DigitalInput(4)
+        self.limit_switch = wpilib.DigitalInput(constants.LIMIT_SWITCH_INTAKE_PORT)
 
         self.pid = PIDController(*constants.PID_INTAKE)
 
@@ -26,10 +26,8 @@ class AlgaeIntake:
         self.intake_motion.getEncoder().setPosition(0)
 
     def reajust_encoder(self):
-        if self.limit_switch.get() == 1:
+        if self.limit_switch.get() is False:
             self.intake_motion.getEncoder().setPosition(0)
-        else:
-            pass
 
     def intake_receiving_position(self):
         self.go_to_position(30)
