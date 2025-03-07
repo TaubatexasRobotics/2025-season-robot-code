@@ -41,14 +41,14 @@ class TestRobot(wpilib.TimedRobot):
     def teleopPeriodic(self):
         if self.dualshock4.getRawButton(dualshock4["cross"]):
             self.drivetrain.slowdrive(
-                self.dualshock4.getRawAxis(dualshock4["left-trigger-axis"]),
                 self.dualshock4.getRawAxis(dualshock4["right-trigger-axis"]),
-                -self.dualshock4.getRawAxis(dualshock4["left-x-axis"]) 
+                self.dualshock4.getRawAxis(dualshock4["left-trigger-axis"]),
+                -self.dualshock4.getRawAxis(dualshock4["right-x-axis"]) 
             )
         else:
             self.drivetrain.arcadeDrive(
-                self.dualshock4.getRawAxis(dualshock4["left-trigger-axis"]),
                 self.dualshock4.getRawAxis(dualshock4["right-trigger-axis"]),
+                self.dualshock4.getRawAxis(dualshock4["left-trigger-axis"]),
                 -self.dualshock4.getRawAxis(dualshock4["left-x-axis"]) 
             )
         
@@ -70,7 +70,8 @@ class TestRobot(wpilib.TimedRobot):
             self.coral_intake.invert()
         else:
             self.coral_intake.disable()
-
+        self.intake.reajust_encoder()
+        #print(self.intake.limit_switch.get())
         # Intake control position
         if self.xbox_360.getRawButtonPressed(g_xbox_360["y"]):
             self.intake.setControlVal(2)

@@ -2,6 +2,12 @@ import wpilib
 import rev
 from wpimath.controller import PIDController
 import constants
+from enum import Enum
+
+class State(Enum):
+    IDLE = 0
+    OPENING = 1
+    CLOSING = 2
 
 class AlgaeIntake:
     def __init__(self):
@@ -18,31 +24,39 @@ class AlgaeIntake:
 
         self.control_val = 0
 
+        self.state = State.IDLE
+        self.intake_motion.set(0)
+
     def go_to_position(self,setpoint):
         self.intake_motion.set(self.pid.calculate(self.intake_motion.getEncoder().getPosition(), setpoint))
-        #print(self.pid.calculate(self.intake_motion.getEncoder().getPosition(), setpoint))
 
     def reset_intake(self):
-        self.intake_motion.getEncoder().setPosition(0)
+        self.intake_motion.getEncoder().setPosition(3)
 
     def reajust_encoder(self):
-        if self.limit_switch.get() == 1:
-            self.intake_motion.getEncoder().setPosition(0)
-        else:
-            pass
+        print(self.intake_motion.getEncoder().getPosition())
+        if self.limit_switch.get() is False and self.state == State.CLOSING:
+            self.reset_intake()
+            self.pid.setPID(0, 0, 0)
+            self.state = State.IDLE
 
     def intake_receiving_position(self):
         self.go_to_position(30)
+        self.pid.setPID(*constants.PID_INTAKE)
+        self.state = State.OPENING
         
     def intake_removing_position(self):
         self.go_to_position(50)
+        self.pid.setPID(*constants.PID_INTAKE)
+        self.state = State.OPENING
         
     def intake_reset_position(self):
-        self.go_to_position(0)
+        self.go_to_position(3)
+        self.state = State.CLOSING
         
     def testeI(self):
         print(self.intake_motion.getEncoder().getPosition())
-
+6y
     def position(self):
         return self.pid.atSetpoint()
     

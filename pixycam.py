@@ -5,4 +5,5 @@ class PixyCam:
     def __init__(self) -> None:
         self.arduino = wpilib.SerialPort(constants.BAUD_RATE, wpilib.SerialPort.Port.kUSB1)
     
-    def readBytes(self, port) ->
+    def readBytes(self, port) -> None:
+        pass

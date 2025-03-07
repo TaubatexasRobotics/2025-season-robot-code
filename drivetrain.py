@@ -34,8 +34,8 @@ class Drivetrain:
         self.right_pulses = self.r_encoder.get()
         self.left_position = self.left_pulses / self.pulsos_p_m_l
         self.right_position = self.right_pulses / self.pulsos_p_m_r
-        print("RIGHT: " + str(self.right_pulses))
-        print("LEFT: " + str(self.left_pulses))
+        #print("RIGHT: " + str(self.right_pulses))
+        #print("LEFT: " + str(self.left_pulses))
 
         wpilib.SmartDashboard.putNumber("Encoder Left", self.left_pulses)
         wpilib.SmartDashboard.putNumber("Encoder Right", self.right_pulses)
