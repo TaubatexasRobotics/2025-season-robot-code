@@ -17,16 +17,16 @@ robotpy_extras = [
     # "apriltag",
     # "commands2",
     # "cscore",
-    # "navx",
+    "navx",
     # "pathplannerlib",
     # "phoenix6",
     # "photonvision",
     # "playingwithfusion",
-    "rev",
+    # "rev",
     # "romi",
     # "sim",
     # "xrp",
 ]
 
 # Other pip packages to install
-requires = ["robotpy-ctre", "photonlibpy"]
+requires = ["robotpy-rev~=2025.0.2", "robotpy-ctre", "photonlibpy"]
