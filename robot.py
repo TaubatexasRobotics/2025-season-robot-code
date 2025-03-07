@@ -2,7 +2,6 @@ import wpilib
 import wpilib.drive
 import constants
 
-from camera import AprilTagCamera
 from climber import Climber
 from drivetrain import Drivetrain
 from buttons import dualshock4, g_xbox_360
@@ -23,8 +22,6 @@ class TestRobot(wpilib.TimedRobot):
         self.default_controller_option = constants.SENDABLE_CHOOSER_TWO_JOYSTICKS_OPTION
         self.steering_wheel_option = constants.SENDABLE_CHOOSER_STEERING_WHEEL_OPTION
 
-        self.camera = AprilTagCamera(constants.PHOTONVISION_CAMERA_NAME) 
-
     def robotPeriodic(self):
         self.drivetrain.updateEncoders()
 
@@ -32,7 +29,7 @@ class TestRobot(wpilib.TimedRobot):
         pass
 
     def autonomousPeriodic(self):
-        pass
+        self.drivetrain.arcadeDriveAlign(3)
 
     def teleopInit(self):
         self.drivetrain.safetyMode()
@@ -51,6 +48,7 @@ class TestRobot(wpilib.TimedRobot):
                 self.dualshock4.getRawAxis(dualshock4["right-trigger-axis"]),
                 -self.dualshock4.getRawAxis(dualshock4["left-x-axis"]) 
             )
+
         
         self.climber.climberControl(
             self.xbox_360.getRawAxis(g_xbox_360['left-trigger-axis']),
@@ -70,6 +68,9 @@ class TestRobot(wpilib.TimedRobot):
             self.coral_intake.invert()
         else:
             self.coral_intake.disable()
+
+        #self.intake.readjust_encoder()
+        wpilib.SmartDashboard.putBoolean("Limit Switch", self.intake.limit_switch.get())
 
         # Intake control position
         if self.xbox_360.getRawButtonPressed(g_xbox_360["y"]):
