@@ -7,12 +7,12 @@ class AprilTagCamera:
     def __init__(self, camera: str) -> None:
         self.camera = photonlibpy.PhotonCamera(camera)
 
-	def getBestTarget(self) -> Optional[PhotonTrackedTarget]:
-		result = self.camera.getLatestResult()
-		if result.hasTargets():
-			target = result.getBestTarget()
-			return target
-		return None
+    def getBestTarget(self) -> Optional[PhotonTrackedTarget]:
+        result = self.camera.getLatestResult()
+        if result.hasTargets():
+            target = result.getBestTarget()
+            return target
+        return None
 
     def getYaw(self, tag) -> float:
         target_yaw = 0
