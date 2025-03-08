@@ -43,7 +43,7 @@ class TestRobot(wpilib.TimedRobot):
                 self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
                 -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
             )
-        elif self.dualshock4.getRawButton(dualshock4["square"]):
+        elif self.dualshock4.getRawButton(dualshock4_map["square"]):
             self.drivetrain.turnToDegrees()
         else:
             self.drivetrain.arcadeDrive(
