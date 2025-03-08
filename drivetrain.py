@@ -3,6 +3,7 @@ import wpilib.drive
 import phoenix5
 import constants
 import wpimath.geometry
+from typing import Optional
 
 from wpimath.kinematics import DifferentialDriveOdometry
 from wpimath.controller import PIDController
@@ -25,7 +26,7 @@ class Drivetrain:
         self.right.setInverted(True)
 
         # Setup differential drive for arcade drive
-        self.robot_drive = wpilib.drive.DifferentialDrive(self.left, self.right)
+        self.drivetrain = wpilib.drive.DifferentialDrive(self.left, self.right)
         self.r_encoder = wpilib.Encoder(constants.RIGHT_ENCODER_A, constants.RIGHT_ENCODER_B)
         self.l_encoder = wpilib.Encoder(constants.LEFT_ENCODER_A, constants.LEFT_ENCODER_B)
 
@@ -36,14 +37,16 @@ class Drivetrain:
         rotation = wpimath.geometry.Rotation2d.fromDegrees(self.navx.getAngle())
         initial_pose = wpimath.geometry.Pose2d(*constants.INITIAL_POSE)
         self.odometry = wpimath.kinematics.DifferentialDriveOdometry(rotation, 0, 0, initial_pose)
-        self.pid = PIDController(*constants.PID_ANGULAR_DRIVETRAIN)
+
+        self.pid_angular = PIDController(*constants.PID_ANGULAR_DRIVETRAIN)
+        self.pid_angular.enableContinuousInput(-180, 180)
+        self.pid_angular.setSetpoint(180)
 
         self.camera = AprilTagCamera(constants.PHOTONVISION_CAMERA_NAME) 
 
-        wpilib.SmartDashboard.putNumber("Encoder Left", 0)
-        wpilib.SmartDashboard.putNumber("Encoder Right", 0)
+        wpilib.SmartDashboard.putData("PID Angular Drivetrain", self.pid_angular)
 
-    def updateEncoders(self) -> None:
+    def updateData(self) -> None:
         self.pulsos_p_m_r = 4753
         self.pulsos_p_m_l = 2839
         self.left_pulses = self.l_encoder.get()
@@ -51,26 +54,39 @@ class Drivetrain:
         self.left_position = self.left_pulses / self.pulsos_p_m_l
         self.right_position = self.right_pulses / self.pulsos_p_m_r
 
+        rotation = wpimath.geometry.Rotation2d.fromDegrees(self.navx.getAngle())
+        self.odometry.update(rotation, self.left_position, self.right_position)
+
         wpilib.SmartDashboard.putNumber("Encoder Left", self.left_pulses)
         wpilib.SmartDashboard.putNumber("Encoder Right", self.right_pulses)
+        wpilib.SmartDashboard.putData("navX", self.navx)
+
+    def reset(self) -> None:
+        self.drivetrain.arcadeDrive(0, 0)
 
     def safetyMode(self):
-        self.robot_drive.setExpiration(0.1)
-        self.robot_drive.setSafetyEnabled(True)
+        self.drivetrain.setExpiration(0.1)
+        self.drivetrain.setSafetyEnabled(True)
 
     def arcadeDrive(self, fwd_left, fwd_right, turn) -> None:
         move_value = -(fwd_left - fwd_right)
 
         # Use arcade drive to move the robot
-        self.robot_drive.arcadeDrive(move_value, turn)
+        self.drivetrain.arcadeDrive(move_value, turn)
 
     def arcadeDriveAlign(self, tag: int) -> None:
         yaw = self.camera.getYaw(tag)
-        turn = self.pid.calculate(yaw, 0) if yaw != -1 else 0
-        self.robot_drive.arcadeDrive(0, turn)
+        turn = self.pid_angular.calculate(yaw, 0) if yaw != -1 else 0
+        self.drivetrain.arcadeDrive(0, turn)
+
+    def turnToDegrees(self, setpoint: Optional[int]) -> None:
+        turn = 0
+
+        turn = self.pid_angular.calculate(self.navx.getAngle(), self.pid_angular.getSetpoint())
+        self.drivetrain.arcadeDrive(0, turn)
 
     def slowdrive(self, fwd_left, fwd_right, turn) -> None:
         move_value = -(fwd_left - fwd_right)
 
         # Use arcade drive to move the robot
-        self.robot_drive.arcadeDrive((move_value/2.6), (turn/1.5))
+        self.drivetrain.arcadeDrive((move_value/2.6), (turn/1.5))

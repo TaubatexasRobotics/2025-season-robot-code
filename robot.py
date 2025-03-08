@@ -23,10 +23,11 @@ class TestRobot(wpilib.TimedRobot):
         self.steering_wheel_option = constants.SENDABLE_CHOOSER_STEERING_WHEEL_OPTION
 
     def robotPeriodic(self):
-        self.drivetrain.updateEncoders()
+        self.drivetrain.updateData()
 
     def autonomousInit(self):
-        pass
+        self.drivetrain.safetyMode()
+        self.drivetrain.reset()
 
     def autonomousPeriodic(self):
         self.drivetrain.arcadeDriveAlign(3)
@@ -42,6 +43,8 @@ class TestRobot(wpilib.TimedRobot):
                 self.dualshock4.getRawAxis(dualshock4["right-trigger-axis"]),
                 -self.dualshock4.getRawAxis(dualshock4["left-x-axis"]) 
             )
+        elif self.dualshock4.getRawButton(dualshock4["square"]):
+            self.drivetrain.turnToDegrees()
         else:
             self.drivetrain.arcadeDrive(
                 self.dualshock4.getRawAxis(dualshock4["left-trigger-axis"]),
