@@ -1,3 +1,5 @@
+import wpimath.units
+
 # Drivetrain
 RIGHT_FRONT_ID = 1
 RIGHT_BACK_ID = 2
@@ -9,6 +11,7 @@ LEFT_ENCODER_A = 8
 LEFT_ENCODER_B = 9
 INITIAL_POSE = (0, 0, 0)
 PID_ANGULAR_DRIVETRAIN = (0.02, 0.01, 0)
+PID_LINEAR_DRIVETRAIN = (0.02, 0.01, 0)
 
 # Algae Intake
 INTAKE_MOTION_ID = 50
@@ -29,7 +32,12 @@ XBOX_360_CONTROLLER_ID = 1
 # Strings
 SENDABLE_CHOOSER_STEERING_WHEEL_OPTION = "Volante"
 SENDABLE_CHOOSER_TWO_JOYSTICKS_OPTION = "Dois Controles"
-PHOTONVISION_CAMERA_NAME = "Microsoft_LifeCam_HD-3000"
 
 # PixyCam
 BAUD_RATE = 9600
+
+# Photonvision (using meters and radians)
+PHOTONVISION_CAMERA_NAME = "Microsoft_LifeCam_HD-3000"
+CAMERA_HEIGHT_METERS = wpimath.units.inchesToMeters(24)
+TARGET_HEIGHT_METERS = wpimath.units.feetToMeters(5)
+CAMERA_PITCH_RADIANS = wpimath.units.degreesToRadians(0)
