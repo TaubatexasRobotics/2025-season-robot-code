@@ -1,5 +1,5 @@
 # DualShock 4 (PS4 Controller) without DS4 Controller
-dualshock4 = {
+dualshock4_map = {
     "square": 1,
     "cross": 2,
     "circle": 3,
@@ -43,7 +43,7 @@ g_pro_controller = {
 }
 
 # Generic Xbox 360 Controller
-g_xbox_360 = {
+g_xbox_360_map = {
     "a": 1,
     "b": 2,
     "x": 3,

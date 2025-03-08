@@ -9,3 +9,12 @@ class Climber:
         combined_value = right - left
         self.climber.set(combined_value)
         
+    def climbUp(self):
+        self.climber.set(1)
+    
+    def climbDown(self):
+        self.climber.set(-1)
+        
+    def idle(self):
+        self.climber.set(0)
+        
