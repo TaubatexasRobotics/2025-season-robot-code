@@ -61,9 +61,9 @@ class TestRobot(wpilib.TimedRobot):
             self.climber.idle()
             
             
-        if self.dualshock4_2.getRawButton(dualshock4_map["r2"]):
+        if self.dualshock4_2.getRawButton(dualshock4_map["l2"]):
             self.algae_intake.intake_expel()
-        elif self.dualshock4_2.getRawButton(dualshock4_map["l2"]): 
+        elif self.dualshock4_2.getRawButton(dualshock4_map["r2"]): 
             self.algae_intake.intake_absorb()
         else:
             self.algae_intake.deactivate_intake()
