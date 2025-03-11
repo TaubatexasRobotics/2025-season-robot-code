@@ -1,3 +1,7 @@
+# WPILib default config
+tests/
+.wpilib/
+
 # Those were created when running `python -m robotpy sim`
 networktables.json
 simgui-ds.json

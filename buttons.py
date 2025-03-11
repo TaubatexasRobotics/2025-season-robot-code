@@ -1,11 +1,13 @@
 # DualShock 4 (PS4 Controller) without DS4 Controller
-dualshock4 = {
+dualshock4_map = {
     "square": 1,
     "cross": 2,
     "circle": 3,
     "triangle": 4,
     "l1": 5,
+    "lb": 5,
     "r1": 6,
+    "rb": 6,
     "l2": 7,
     "r2": 8,
     "share": 9,
@@ -18,6 +20,12 @@ dualshock4 = {
     "pov-down": 180,
     "pov-left": 270,
     "pov-right": 90,
+    "left-x-axis": 0,
+    "left-y-axis": 1,
+    "right-x-axis": 2,
+    "right-y-axis": 5,
+    "left-trigger-axis": 3, 
+    "right-trigger-axis": 4 
 }
 
 # Generic Nintendo Switch Pro Controller
@@ -35,7 +43,7 @@ g_pro_controller = {
 }
 
 # Generic Xbox 360 Controller
-g_xbox_360 = {
+g_xbox_360_map = {
     "a": 1,
     "b": 2,
     "x": 3,
@@ -52,14 +60,13 @@ g_xbox_360 = {
     "pov-right": 90,
     "left-x-stick": 0,
     "left-y-stick": 1,
-    "lt": 2,
-    "rt": 3,
+    "left-trigger-axis": 2, 
+    "right-trigger-axis": 3, 
     "right-y-stick": 5,
     "right-x-stick": 4,
 }
 
 # Generic steering wheel controller (generic Xbox 360 controller)
-
 steering_wheel = {
     "turn-axis": 0,
     "a" : 3,
