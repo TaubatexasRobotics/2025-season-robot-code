@@ -4,7 +4,7 @@ import constants
 
 from climber import Climber
 from drivetrain import Drivetrain
-from buttons import dualshock4_map
+from buttons import dualshock4_map, g_xbox_360_map
 from algae_intake import AlgaeIntake
 from coral_intake import CoralIntake
 
@@ -39,16 +39,16 @@ class TestRobot(wpilib.TimedRobot):
     def teleopPeriodic(self):
         if self.dualshock4.getRawButton(dualshock4_map["cross"]):
             self.drivetrain.slowdrive(
-                self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
                 self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
+                self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
                 -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
             )
         elif self.dualshock4.getRawButton(dualshock4_map["square"]):
             self.drivetrain.turnToDegrees()
         else:
             self.drivetrain.arcadeDrive(
-                self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
                 self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
+                self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
                 -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
             )
 
@@ -60,32 +60,28 @@ class TestRobot(wpilib.TimedRobot):
         else:
             self.climber.idle()
             
-            
-        if self.dualshock4_2.getRawButton(dualshock4_map["l2"]):
+        if self.dualshock4_2.getRawAxis(g_xbox_360_map["left-trigger-axis"]) > 0:
             self.algae_intake.intake_expel()
-        elif self.dualshock4_2.getRawButton(dualshock4_map["r2"]): 
+        elif self.dualshock4_2.getRawAxis(g_xbox_360_map["right-trigger-axis"]) > 0: 
             self.algae_intake.intake_absorb()
         else:
             self.algae_intake.deactivate_intake()
         
-        if self.dualshock4_2.getRawButton(dualshock4_map["l1"]):
+        if self.dualshock4_2.getRawButton(g_xbox_360_map["lb"]):
             self.coral_intake.enable()
-        elif self.dualshock4_2.getRawButton(dualshock4_map["r1"]):
+        elif self.dualshock4_2.getRawButton(g_xbox_360_map["rb"]):
             self.coral_intake.invert()
         else:
             self.coral_intake.disable()
 
-        #self.intake.readjust_encoder()
-        wpilib.SmartDashboard.putBoolean("Limit Switch", self.algae_intake.limit_switch.get())
-
         # Intake control position
-        if self.dualshock4_2.getRawButtonPressed(dualshock4_map["triangle"]):
+        if self.dualshock4_2.getRawButtonPressed(g_xbox_360_map["y"]):
             self.algae_intake.setControlVal(2)
             
-        if self.dualshock4_2.getRawButtonPressed(dualshock4_map["circle"]):
+        if self.dualshock4_2.getRawButtonPressed(g_xbox_360_map["b"]):
             self.algae_intake.setControlVal(1)
             
-        if self.dualshock4_2.getRawButtonPressed(dualshock4_map["cross"]):
+        if self.dualshock4_2.getRawButtonPressed(g_xbox_360_map["a"]):
             self.algae_intake.setControlVal(0)
            
         match self.algae_intake.getControlVal():
