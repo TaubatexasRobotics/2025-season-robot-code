@@ -67,7 +67,7 @@ g_xbox_360_map = {
 }
 
 # Generic steering wheel controller (generic Xbox 360 controller)
-steering_wheel = {
+steering_wheel_map = {
     "turn-axis": 0,
     "a" : 3,
     "b" : 2,
@@ -80,4 +80,28 @@ steering_wheel = {
     "r3" : 12,
     "l3" : 11,
     "back" : 9,
+}
+
+# Xbox One Controller
+xbox_one_map = {
+    "a": 1,
+    "b": 2,
+    "x": 3,
+    "y": 4,
+    "lb": 5,
+    "rb": 6,
+    "back": 7,
+    "start": 8,
+    "press_left_stick": 9,
+    "press_right_stick": 10,
+    "pov-up": 0,
+    "pov-down": 180,
+    "pov-left": 270,
+    "pov-right": 90,
+    "left-x-stick": 0,
+    "left-y-stick": 1,
+    "left-trigger-axis": 2, 
+    "right-trigger-axis": 3, 
+    "right-y-stick": 5,
+    "right-x-stick": 4,
 }
