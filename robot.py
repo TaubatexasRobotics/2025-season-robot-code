@@ -85,7 +85,6 @@ class TestRobot(wpilib.TimedRobot):
         except Exception as e:
             print(e)
 
-
         try:
             self.updateControlType()
             self.algae_intake.teleopPeriodic()
@@ -113,14 +112,15 @@ class TestRobot(wpilib.TimedRobot):
 
             if(self.arm_control_type == "position"):
                 if self.dualshock4_2.getRawButtonPressed(dualshock4_map["triangle"]):
-                    position = "REMOVING"
+                    self.algae_intake.target_position = "REMOVING"
                 if self.dualshock4_2.getRawButtonPressed(dualshock4_map["circle"]):
-                    position = "RECEIVING"
+                    self.algae_intake.target_position = "RECEIVING"
                 if self.dualshock4_2.getRawButtonPressed(dualshock4_map["cross"]):
-                    position = "HOMING"
-                self.algae_intake.go_to_position(constants.ARM_POSITIONS[position])
+                    self.algae_intake.target_position = "HOMING"
+                    print(position, constants.ARM_POSITIONS[position])
+                self.algae_intake.go_to_position(constants.ARM_POSITIONS[self.algae_intake.target_position])
             else:
-                self.algae_intake.move_arm_by_joystick(
+                self.algae_intake.move_arm_by_duty_cycle(
                     self.dualshock4_2.getRawAxis(dualshock4_map["right-y-axis"])
                 )
         except Exception as e:
