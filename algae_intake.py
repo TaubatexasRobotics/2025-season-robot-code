@@ -17,6 +17,14 @@ class AlgaeIntake:
 
         self.target_position: Literal["REMOVING", "RECEIVING", "HOMING"] = "HOMING"
 
+    def updateDashboard(self, dashboard) -> None:
+        dashboard.putNumber("Arm Angle", self.arm_encoder.getPosition())
+        dashboard.putBoolean("Arm position", self.arm_control_type == "position")
+        dashboard.putBoolean("Arm duty cycle", self.arm_control_type == "duty_cycle")
+        dashboard.putNumber("Arm Encoder", self.arm_encoder.getPosition())
+        dashboard.putNumber("Setpoint", self.setpoint)
+        dashboard.putBoolean("Limit Switch", self.lower_limit_switch.get())
+
     def robotPeriodic(self):
         self.update_encoder()
 

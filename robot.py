@@ -15,8 +15,9 @@ class TestRobot(wpilib.TimedRobot):
         self.drivetrain = Drivetrain()
         self.algae_intake = AlgaeIntake()
         self.coral_intake = CoralIntake()
-
         self.mechanisms = [self.climber, self.drivetrain, self.algae_intake, self.coral_intake]
+
+        self.dashboard = wpilib.SmartDashboard
 
         self.dualshock4 = wpilib.Joystick(constants.DUALSHOCK4_ID)
         self.dualshock4_2 = wpilib.Joystick(constants.DUALSHOCK4_2_ID)
@@ -44,14 +45,18 @@ class TestRobot(wpilib.TimedRobot):
         
         return self.algae_intake.arm_control_type
     
-    def run_mechanisms_code(self, mechanisms: list, method_name: str) -> None:
+    def run_mechanisms_method(self, mechanisms: list, method_name: str, *args, **kwargs) -> None:
         for mechanism in mechanisms:
             if hasattr(mechanism, method_name):
-                getattr(mechanism, method_name)()
+                getattr(mechanism, method_name)(*args, **kwargs)
+    
+    def updateDashboard(self):
+        self.run_mechanisms_method(self.mechanisms, "updateDashboard", self.dashboard)
 
     def robotPeriodic(self):
+        self.updateDashboard()
         self.drivetrain.updateData()
-        self.run_mechanisms_code(self.mechanisms, "robotPeriodic")
+        self.run_mechanisms_method(self.mechanisms, "robotPeriodic")
 
     def autonomousInit(self):
         self.drivetrain.safetyMode()
