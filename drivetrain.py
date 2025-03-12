@@ -61,6 +61,10 @@ class Drivetrain:
         wpilib.SmartDashboard.putNumber("Encoder Right", self.right_pulses)
         wpilib.SmartDashboard.putData("navX", self.navx)
 
+    def autonomousInit(self) -> None:
+        self.drivetrain.safetyMode()
+        self.drivetrain.reset()
+
     def reset(self) -> None:
         self.drivetrain.arcadeDrive(0, 0)
 
@@ -79,10 +83,12 @@ class Drivetrain:
         turn = self.pid_angular.calculate(yaw, 0) if yaw != -1 else 0
         self.drivetrain.arcadeDrive(0, turn)
 
-    def turnToDegrees(self, setpoint: Optional[int]) -> None:
-        turn = 0
+    def turnToDegrees(self, setpoint: Optional[int] = None) -> None:
+        #I don't know what a call without parameters was supposed to do, but there is a call like that in robot.py
+        if setpoint is None:
+            setpoint = self.pid_angular.getSetpoint()
 
-        turn = self.pid_angular.calculate(self.navx.getAngle(), self.pid_angular.getSetpoint())
+        turn = self.pid_angular.calculate(self.navx.getAngle(), setpoint)
         self.drivetrain.arcadeDrive(0, turn)
 
     def slowdrive(self, fwd_left, fwd_right, turn) -> None:
