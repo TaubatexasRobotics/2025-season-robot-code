@@ -114,11 +114,11 @@ class TestRobot(wpilib.TimedRobot):
                 self.coral_intake.disable()
 
             if(self.algae_intake.arm_control_type == "position"):
-                if self.dualshock4_2.getRawButtonPressed(dualshock4_map["triangle"]):
+                if self.dualshock4_2.getRawButton(dualshock4_map["triangle"]):
                     self.algae_intake.target_position = "REMOVING"
-                if self.dualshock4_2.getRawButtonPressed(dualshock4_map["circle"]):
+                if self.dualshock4_2.getRawButton(dualshock4_map["circle"]):
                     self.algae_intake.target_position = "RECEIVING"
-                if self.dualshock4_2.getRawButtonPressed(dualshock4_map["cross"]):
+                if self.dualshock4_2.getRawButton(dualshock4_map["cross"]):
                     self.algae_intake.target_position = "HOMING"
                 self.algae_intake.go_to_position(constants.ARM_POSITIONS[self.algae_intake.target_position])
             else:

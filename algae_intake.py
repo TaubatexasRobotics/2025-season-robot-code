@@ -19,8 +19,8 @@ class AlgaeIntake:
 
     def updateDashboard(self, dashboard) -> None:
         dashboard.putNumber("Arm Angle", self.arm_encoder.getPosition())
-        dashboard.putBoolean("Arm position", self.arm_control_type == "position")
-        dashboard.putBoolean("Arm duty cycle", self.arm_control_type == "duty_cycle")
+        dashboard.putBoolean("Arm on position mode", self.arm_control_type == "position")
+        dashboard.putBoolean("Arm on duty cycle mode", self.arm_control_type == "duty_cycle")
         dashboard.putNumber("Arm Encoder", self.arm_encoder.getPosition())
         dashboard.putNumber("Setpoint", self.setpoint)
         dashboard.putBoolean("Limit Switch", self.lower_limit_switch.get())
@@ -35,7 +35,7 @@ class AlgaeIntake:
             
             self.arm_pivot_motor.set(motor_response)
 
-    def go_to_position(self,setpoint):
+    def go_to_position(self, setpoint):
         self.setpoint = setpoint
 
     def reset_intake(self):
