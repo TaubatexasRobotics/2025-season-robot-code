@@ -28,7 +28,7 @@ class TestRobot(wpilib.TimedRobot):
 
     def updateControlType(self) -> Literal["position", "duty_cycle"]:
         position_control_buttons = ["triangle", "circle", "cross"]
-        check_is_pressed = self.dualshock4_2.getRawButtonPressed
+        check_is_pressed = self.dualshock4_2.getRawButton
 
         is_any_control_button_pressed = any(
             check_is_pressed(dualshock4_map[button])
@@ -49,8 +49,17 @@ class TestRobot(wpilib.TimedRobot):
         for mechanism in mechanisms:
             if hasattr(mechanism, method_name):
                 getattr(mechanism, method_name)(*args, **kwargs)
+
+    def testDashboardResponsiveness(self):
+        '''Tests responsiveness of the dashboard with an evergrowing number'''
+        if not hasattr(self, "responsiveness_test"):
+            self.responsiveness_test = 0
+        self.responsiveness_test += 1
+        self.dashboard.putNumber("Responsiveness Test", self.responsiveness_test)
     
     def updateDashboard(self):
+        # test responsiveness
+        self.testDashboardResponsiveness()
         self.run_mechanisms_method(self.mechanisms, "updateDashboard", self.dashboard)
 
     def robotPeriodic(self):
