@@ -15,6 +15,9 @@ class AlgaeIntake:
         self.arm_encoder = self.intake_motion.getEncoder()
         self.arm_control_type: Literal["position", "duty_cycle"] = "position"
 
+    def robotPeriodic(self):
+        self.update_encoder()
+
     def teleopPeriodic(self):
         if self.arm_control_type == "position":
             motor_response = self.pid.calculate(self.arm_encoder.getPosition(), self.setpoint)
@@ -29,17 +32,8 @@ class AlgaeIntake:
         self.arm_encoder.setPosition(0)
 
     def update_encoder(self):
-        if self.lower_limit_switch.get() is False:
+        if self.is_arm_homed():
             self.arm_encoder.setPosition(0)
-
-    def intake_receiving_position(self):
-        self.go_to_position(30)
-        
-    def intake_removing_position(self):
-        self.go_to_position(50)
-        
-    def intake_reset_position(self):
-        self.go_to_position(0)
 
     def is_at_setpoint(self):
         return self.pid.atSetpoint()

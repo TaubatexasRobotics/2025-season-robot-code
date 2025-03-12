@@ -16,6 +16,8 @@ class TestRobot(wpilib.TimedRobot):
         self.algae_intake = AlgaeIntake()
         self.coral_intake = CoralIntake()
 
+        self.mechanisms = [self.climber, self.drivetrain, self.algae_intake, self.coral_intake]
+
         self.dualshock4 = wpilib.Joystick(constants.DUALSHOCK4_ID)
         self.dualshock4_2 = wpilib.Joystick(constants.DUALSHOCK4_2_ID)
         
@@ -43,9 +45,15 @@ class TestRobot(wpilib.TimedRobot):
             self.arm_control_type = "duty_cycle"
         
         return self.arm_control_type
+    
+    def run_mechanisms_code(self, mechanisms: list, method_name: str) -> None:
+        for mechanism in mechanisms:
+            if hasattr(mechanism, method_name):
+                getattr(mechanism, method_name)()
 
     def robotPeriodic(self):
         self.drivetrain.updateData()
+        self.run_mechanisms_code(self.mechanisms, "robotPeriodic")
 
     def autonomousInit(self):
         self.drivetrain.safetyMode()
@@ -100,11 +108,12 @@ class TestRobot(wpilib.TimedRobot):
 
         if(self.arm_control_type == "position"):
             if self.dualshock4_2.getRawButtonPressed(dualshock4_map["triangle"]):
-                self.algae_intake.intake_removing_position()
+                position = "REMOVING"
             if self.dualshock4_2.getRawButtonPressed(dualshock4_map["circle"]):
-                self.algae_intake.intake_receiving_position()
+                position = "RECEIVING"
             if self.dualshock4_2.getRawButtonPressed(dualshock4_map["cross"]):
-                self.algae_intake.intake_reset_position()
+                position = "HOMING"
+            self.algae_intake.go_to_position(constants.ARM_POSITIONS[position])
         else:
             self.algae_intake.move_arm_by_joystick(
                 self.dualshock4_2.getRawAxis(dualshock4_map["right-y-axis"])
