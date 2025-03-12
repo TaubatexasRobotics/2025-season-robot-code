@@ -7,6 +7,7 @@ from drivetrain import Drivetrain
 from buttons import dualshock4_map
 from algae_intake import AlgaeIntake
 from coral_intake import CoralIntake
+from typing import Literal
 
 class TestRobot(wpilib.TimedRobot):
     def robotInit(self):
@@ -21,6 +22,27 @@ class TestRobot(wpilib.TimedRobot):
         self.chooser = wpilib.SendableChooser()
         self.default_controller_option = constants.SENDABLE_CHOOSER_TWO_JOYSTICKS_OPTION
         self.steering_wheel_option = constants.SENDABLE_CHOOSER_STEERING_WHEEL_OPTION
+
+        self.arm_control_type: Literal["position", "duty_cycle"] = "position"
+
+    def updateControlType(self) -> Literal["position", "duty_cycle"]:
+        position_control_buttons = ["triangle", "circle", "cross"]
+        check_is_pressed = self.dualshock4_2.getRawButtonPressed
+
+        is_any_control_button_pressed = any(
+            check_is_pressed(dualshock4_map[button])
+            for button
+            in position_control_buttons
+        )
+
+        y_axis_value = self.dualshock4_2.getRawAxis(dualshock4_map["right-y-axis"])
+
+        if is_any_control_button_pressed:
+            self.arm_control_type = "position"
+        elif abs( y_axis_value ) > 0.15:
+            self.arm_control_type = "duty_cycle"
+        
+        return self.arm_control_type
 
     def robotPeriodic(self):
         self.drivetrain.updateData()
@@ -37,6 +59,8 @@ class TestRobot(wpilib.TimedRobot):
         self.algae_intake.reset_intake()
         
     def teleopPeriodic(self):
+        self.updateControlType()
+
         if self.dualshock4.getRawButton(dualshock4_map["cross"]):
             self.drivetrain.slowdrive(
                 self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
@@ -51,7 +75,6 @@ class TestRobot(wpilib.TimedRobot):
                 self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
                 -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
             )
-
         
         if self.dualshock4_2.getPOV() == 0:
             self.climber.climbUp()
@@ -59,8 +82,7 @@ class TestRobot(wpilib.TimedRobot):
             self.climber.climbDown()
         else:
             self.climber.idle()
-            
-            
+        
         if self.dualshock4_2.getRawButton(dualshock4_map["l2"]):
             self.algae_intake.intake_expel()
         elif self.dualshock4_2.getRawButton(dualshock4_map["r2"]): 
@@ -78,20 +100,27 @@ class TestRobot(wpilib.TimedRobot):
         #self.intake.readjust_encoder()
         wpilib.SmartDashboard.putBoolean("Limit Switch", self.algae_intake.limit_switch.get())
 
-        # Intake control position
-        if self.dualshock4_2.getRawButtonPressed(dualshock4_map["triangle"]):
-            self.algae_intake.setControlVal(2)
+        if(self.arm_control_type == "position"):
+
+            # Intake control position
+            if self.dualshock4_2.getRawButtonPressed(dualshock4_map["triangle"]):
+                self.algae_intake.setControlVal(2)
+                
+            if self.dualshock4_2.getRawButtonPressed(dualshock4_map["circle"]):
+                self.algae_intake.setControlVal(1)
+                
+            if self.dualshock4_2.getRawButtonPressed(dualshock4_map["cross"]):
+                self.algae_intake.setControlVal(0)
             
-        if self.dualshock4_2.getRawButtonPressed(dualshock4_map["circle"]):
-            self.algae_intake.setControlVal(1)
-            
-        if self.dualshock4_2.getRawButtonPressed(dualshock4_map["cross"]):
-            self.algae_intake.setControlVal(0)
-           
-        match self.algae_intake.getControlVal():
-            case 0:
-                self.algae_intake.intake_reset_position()
-            case 1:
-                self.algae_intake.intake_receiving_position()
-            case 2:
-                self.algae_intake.intake_removing_position()
+            match self.algae_intake.getControlVal():
+                case 0:
+                    self.algae_intake.intake_reset_position()
+                case 1:
+                    self.algae_intake.intake_receiving_position()
+                case 2:
+                    self.algae_intake.intake_removing_position()
+        else:
+            self.algae_intake.move_arm_by_joystick(
+                self.dualshock4_2.getRawAxis(dualshock4_map["right-y-axis"])
+            )
+

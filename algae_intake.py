@@ -59,12 +59,10 @@ class AlgaeIntake:
     def getControlVal(self) -> float:
         return self.control_val
     
-    def arm_is_at_minimal_position(self):
+    def is_arm_homed(self):
         return not self.down_limit_switch.get()
     
-    def move_arm_by_joystick(self, axis_value:float) -> None:
-        if(axis_value > -0.15 and axis_value < 0.15): return
-        if(self.is_homed() and axis_value > 0): return
-
+    def move_arm_by_duty_cycle(self, axis_value:float) -> None:
+        if(self.is_arm_homed() and axis_value > 0): return
         self.set_angle_duty_cycle(axis_value*0.5)
         
