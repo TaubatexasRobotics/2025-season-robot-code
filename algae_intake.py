@@ -4,7 +4,7 @@ from wpimath.controller import PIDController
 import constants
 
 class AlgaeIntake:
-    def __init__(self):
+    def __init__(self) -> None:
         self.intake_motion = rev.SparkMax(constants.INTAKE_MOTION_ID, rev.SparkLowLevel.MotorType.kBrushless)
         self.intake_rotation = rev.SparkMax(constants.INTAKE_ROTATION_ID, rev.SparkLowLevel.MotorType.kBrushless)
 
@@ -14,57 +14,49 @@ class AlgaeIntake:
 
         self.pid = PIDController(*constants.PID_INTAKE)
 
-        self.pid.setTolerance(1,1)
+        self.pid.setTolerance(1, 1)
 
         self.control_val = 0
 
-    def go_to_position(self,setpoint):
+    def go_to_position(self, setpoint: float) -> None:
         self.intake_motion.set(self.pid.calculate(self.intake_motion.getEncoder().getPosition(), setpoint))
-        #print(self.pid.calculate(self.intake_motion.getEncoder().getPosition(), setpoint))
 
-    def reset_intake(self):
+    def reset_intake(self) -> None:
         self.intake_motion.getEncoder().setPosition(0)
 
-    def reajust_encoder(self):
+    def reajust_encoder(self) -> None:
         if self.limit_switch.get() is False:
             self.intake_motion.getEncoder().setPosition(0)
 
-    def intake_receiving_position(self):
+    def intake_receiving_position(self) -> None:
         self.go_to_position(30)
         
-    def intake_removing_position(self):
+    def intake_removing_position(self) -> None:
         self.go_to_position(50)
         
-    def intake_reset_position(self):
+    def intake_reset_position(self) -> None:
         self.go_to_position(0)
         
-    def testeI(self):
-        print(self.intake_motion.getEncoder().getPosition())
-
-    def position(self):
-        return self.pid.atSetpoint()
-    
-    def intake_absorb(self):
+    def intake_absorb(self) -> None:
         self.intake_rotation.set(0.4)
 
-    def deactivate_intake(self):
+    def deactivate_intake(self) -> None:
         self.intake_rotation.set(0)
 
-    def intake_expel(self):
+    def intake_expel(self) -> None:
         self.intake_rotation.set(-0.4)
 
-    def setControlVal(self, control_val) -> None:
+    def set_control_val(self, control_val: float) -> None:
         self.control_val = control_val
     
-    def getControlVal(self) -> float:
+    def get_control_val(self) -> float:
         return self.control_val
     
-    def arm_is_at_minimal_position(self):
+    def arm_is_at_minimal_position(self) -> bool:
         return not self.down_limit_switch.get()
     
     def move_arm_by_joystick(self, axis_value:float) -> None:
-        if(axis_value > -0.15 and axis_value < 0.15): return
+        if(abs(axis_value < 0.15)): return
         if(self.is_homed() and axis_value > 0): return
 
-        self.set_angle_duty_cycle(axis_value*0.5)
-        
+        self.set_angle_duty_cycle(axis_value * 0.5)

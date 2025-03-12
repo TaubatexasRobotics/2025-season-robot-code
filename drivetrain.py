@@ -11,7 +11,7 @@ from navx import AHRS
 from camera import AprilTagCamera
 
 class Drivetrain:
-    def __init__(self):
+    def __init__(self) -> None:
         # Initialize motors using CAN IDs
         self.left_front_motor = phoenix5.WPI_VictorSPX(constants.LEFT_FRONT_ID)
         self.left_back_motor = phoenix5.WPI_VictorSPX(constants.LEFT_BACK_ID)
@@ -46,7 +46,7 @@ class Drivetrain:
 
         wpilib.SmartDashboard.putData("PID Angular Drivetrain", self.pid_angular)
 
-    def updateData(self) -> None:
+    def update_data(self) -> None:
         self.pulsos_p_m_r = 4753
         self.pulsos_p_m_l = 2839
         self.left_pulses = self.l_encoder.get()
@@ -64,28 +64,28 @@ class Drivetrain:
     def reset(self) -> None:
         self.drivetrain.arcadeDrive(0, 0)
 
-    def safetyMode(self):
+    def safety_mode(self) -> None:
         self.drivetrain.setExpiration(0.1)
         self.drivetrain.setSafetyEnabled(True)
 
-    def arcadeDrive(self, fwd_left, fwd_right, turn) -> None:
+    def arcade_drive(self, fwd_left: float, fwd_right: float, turn: float) -> None:
         move_value = -(fwd_left - fwd_right)
 
         # Use arcade drive to move the robot
         self.drivetrain.arcadeDrive(move_value, turn)
 
-    def arcadeDriveAlign(self, tag: int) -> None:
+    def aim_drive(self, tag: int) -> None:
         yaw = self.camera.getYaw(tag)
         turn = self.pid_angular.calculate(yaw, 0) if yaw != -1 else 0
         self.drivetrain.arcadeDrive(0, turn)
 
-    def turnToDegrees(self, setpoint: Optional[int]) -> None:
+    def turn_to_degrees(self, setpoint: Optional[int]) -> None:
         turn = 0
 
         turn = self.pid_angular.calculate(self.navx.getAngle(), self.pid_angular.getSetpoint())
         self.drivetrain.arcadeDrive(0, turn)
 
-    def slowdrive(self, fwd_left, fwd_right, turn) -> None:
+    def slow_drive(self, fwd_left: float, fwd_right: float, turn: float) -> None:
         move_value = -(fwd_left - fwd_right)
 
         # Use arcade drive to move the robot

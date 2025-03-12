@@ -5,7 +5,7 @@ class PixyCam:
     def __init__(self) -> None:
         self.arduino = wpilib.SerialPort(constants.BAUD_RATE, wpilib.SerialPort.Port.kUSB1)
     
-    def getDistance(self) -> float:
+    def get_distance(self) -> float:
         if self.arduino.getBytesReceived() <= 0:
             return -1
         buffer = bytearray(self.arduino.getBytesReceived())

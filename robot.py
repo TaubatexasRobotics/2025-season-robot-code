@@ -23,30 +23,31 @@ class TestRobot(wpilib.TimedRobot):
         self.steering_wheel_option = constants.SENDABLE_CHOOSER_STEERING_WHEEL_OPTION
 
     def robotPeriodic(self):
-        self.drivetrain.updateData()
+        self.drivetrain.update_data()
 
     def autonomousInit(self):
-        self.drivetrain.safetyMode()
+        self.drivetrain.safety_mode()
         self.drivetrain.reset()
 
     def autonomousPeriodic(self):
-        self.drivetrain.arcadeDriveAlign(3)
+        self.drivetrain.aim_drive(3)
 
     def teleopInit(self):
-        self.drivetrain.safetyMode()
+        self.drivetrain.safety_mode()
+        self.drivetrain.reset()
         self.algae_intake.reset_intake()
         
     def teleopPeriodic(self):
         if self.dualshock4.getRawButton(dualshock4_map["cross"]):
-            self.drivetrain.slowdrive(
+            self.drivetrain.slow_drive(
                 self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
                 self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
                 -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
             )
         elif self.dualshock4.getRawButton(dualshock4_map["square"]):
-            self.drivetrain.turnToDegrees()
+            self.drivetrain.turn_to_degrees()
         else:
-            self.drivetrain.arcadeDrive(
+            self.drivetrain.arcade_drive(
                 self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
                 self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
                 -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
@@ -74,6 +75,8 @@ class TestRobot(wpilib.TimedRobot):
         else:
             self.coral_intake.disable()
 
+        #self.algae_intake.move_arm_by_joystick(self.dualshock4_2.getRawAxis(g_xbox_360_map["right-y-stick"]))
+
         # Intake control position
         if self.dualshock4_2.getRawButtonPressed(g_xbox_360_map["y"]):
             self.algae_intake.setControlVal(2)
@@ -84,7 +87,7 @@ class TestRobot(wpilib.TimedRobot):
         if self.dualshock4_2.getRawButtonPressed(g_xbox_360_map["a"]):
             self.algae_intake.setControlVal(0)
            
-        match self.algae_intake.getControlVal():
+        match self.algae_intake.get_control_val():
             case 0:
                 self.algae_intake.intake_reset_position()
             case 1:
