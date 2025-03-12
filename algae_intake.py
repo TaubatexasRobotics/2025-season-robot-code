@@ -12,11 +12,12 @@ class AlgaeIntake:
         self.pid = PIDController(*constants.PID_INTAKE)
         self.pid.setTolerance(1,1)
         self.setpoint = 10
+        self.arm_encoder = self.intake_motion.getEncoder()
         self.arm_control_type: Literal["position", "duty_cycle"] = "position"
 
     def teleopPeriodic(self):
         if self.arm_control_type == "position":
-            motor_response = self.pid.calculate(self.intake_motion.getEncoder().getPosition(), self.setpoint)
+            motor_response = self.pid.calculate(self.arm_encoder.getPosition(), self.setpoint)
             if(self.is_arm_homed() and motor_response > 0): motor_response = 0
             
             self.intake_motion.set(motor_response)
@@ -25,11 +26,11 @@ class AlgaeIntake:
         self.setpoint = setpoint
 
     def reset_intake(self):
-        self.intake_motion.getEncoder().setPosition(0)
+        self.arm_encoder.setPosition(0)
 
-    def reajust_encoder(self):
+    def update_encoder(self):
         if self.limit_switch.get() is False:
-            self.intake_motion.getEncoder().setPosition(0)
+            self.arm_encoder.setPosition(0)
 
     def intake_receiving_position(self):
         self.go_to_position(30)
@@ -39,9 +40,6 @@ class AlgaeIntake:
         
     def intake_reset_position(self):
         self.go_to_position(0)
-        
-    def testeI(self):
-        print(self.intake_motion.getEncoder().getPosition())
 
     def is_at_setpoint(self):
         return self.pid.atSetpoint()
