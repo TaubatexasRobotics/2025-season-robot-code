@@ -184,3 +184,7 @@ cython_debug/
 .pypirc
 simgui-window.json
 simgui-ds.json
+
+# Others
+*~
+*.swp
