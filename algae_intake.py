@@ -17,8 +17,6 @@ class AlgaeIntake:
 
         self.target_position: Literal["REMOVING", "RECEIVING", "HOMING"] = "HOMING"
 
-        self.rotation_speed = 0.4
-
     def robotPeriodic(self):
         self.update_encoder()
 
@@ -43,13 +41,13 @@ class AlgaeIntake:
         return self.pid.atSetpoint()
     
     def intake_absorb(self):
-        self.rotation_motor.set(self.rotation_speed)
+        self.rotation_motor.set(constants.INTAKE_ROTATION_SPEED)
 
     def deactivate_intake(self):
         self.rotation_motor.set(0)
 
     def intake_expel(self):
-        self.rotation_motor.set(-self.rotation_speed)
+        self.rotation_motor.set(-constants.INTAKE_ROTATION_SPEED)
 
     def is_arm_homed(self):
         return not self.lower_limit_switch.get()
