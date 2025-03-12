@@ -29,8 +29,7 @@ class AlgaeIntake:
         dashboard.putNumber("Arm Angle", self.arm_encoder.getPosition())
         dashboard.putBoolean("Arm on position mode", self.arm_control_type == "position")
         dashboard.putBoolean("Arm on duty cycle mode", self.arm_control_type == "duty_cycle")
-        dashboard.putNumber("Arm Encoder", self.arm_encoder.getPosition())
-        dashboard.putNumber("Setpoint", self.setpoint)
+        dashboard.putNumber("Setpoint", self.setpoint)  
         dashboard.putNumber("Motor Response", self.motor_response)
         dashboard.putBoolean("Limit Switch", self.lower_limit_switch.get())
 
