@@ -8,7 +8,7 @@ class AlgaeIntake:
     def __init__(self):
         self.intake_motion = rev.SparkMax(constants.INTAKE_MOTION_ID, rev.SparkLowLevel.MotorType.kBrushless)
         self.intake_rotation = rev.SparkMax(constants.INTAKE_ROTATION_ID, rev.SparkLowLevel.MotorType.kBrushless)
-        self.limit_switch = wpilib.DigitalInput(constants.LIMIT_SWITCH_INTAKE_PORT)
+        self.lower_limit_switch = wpilib.DigitalInput(constants.LIMIT_SWITCH_INTAKE_PORT)
         self.pid = PIDController(*constants.PID_INTAKE)
         self.pid.setTolerance(1,1)
         self.setpoint = 10
@@ -29,7 +29,7 @@ class AlgaeIntake:
         self.arm_encoder.setPosition(0)
 
     def update_encoder(self):
-        if self.limit_switch.get() is False:
+        if self.lower_limit_switch.get() is False:
             self.arm_encoder.setPosition(0)
 
     def intake_receiving_position(self):
@@ -54,7 +54,7 @@ class AlgaeIntake:
         self.intake_rotation.set(-0.4)
 
     def is_arm_homed(self):
-        return not self.down_limit_switch.get()
+        return not self.lower_limit_switch.get()
     
     def move_arm_by_duty_cycle(self, axis_value:float) -> None:
         if(self.is_arm_homed() and axis_value > 0): return
