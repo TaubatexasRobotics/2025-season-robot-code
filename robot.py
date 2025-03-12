@@ -25,8 +25,6 @@ class TestRobot(wpilib.TimedRobot):
         self.default_controller_option = constants.SENDABLE_CHOOSER_TWO_JOYSTICKS_OPTION
         self.steering_wheel_option = constants.SENDABLE_CHOOSER_STEERING_WHEEL_OPTION
 
-        self.arm_control_type: Literal["position", "duty_cycle"] = "position"
-
     def updateControlType(self) -> Literal["position", "duty_cycle"]:
         position_control_buttons = ["triangle", "circle", "cross"]
         check_is_pressed = self.dualshock4_2.getRawButtonPressed
@@ -40,11 +38,11 @@ class TestRobot(wpilib.TimedRobot):
         y_axis_value = self.dualshock4_2.getRawAxis(dualshock4_map["right-y-axis"])
 
         if is_any_control_button_pressed:
-            self.arm_control_type = "position"
+            self.algae_intake.arm_control_type = "position"
         elif abs( y_axis_value ) > 0.15:
-            self.arm_control_type = "duty_cycle"
+            self.algae_intake.arm_control_type = "duty_cycle"
         
-        return self.arm_control_type
+        return self.algae_intake.arm_control_type
     
     def run_mechanisms_code(self, mechanisms: list, method_name: str) -> None:
         for mechanism in mechanisms:
@@ -110,14 +108,13 @@ class TestRobot(wpilib.TimedRobot):
             else:
                 self.coral_intake.disable()
 
-            if(self.arm_control_type == "position"):
+            if(self.algae_intake.arm_control_type == "position"):
                 if self.dualshock4_2.getRawButtonPressed(dualshock4_map["triangle"]):
                     self.algae_intake.target_position = "REMOVING"
                 if self.dualshock4_2.getRawButtonPressed(dualshock4_map["circle"]):
                     self.algae_intake.target_position = "RECEIVING"
                 if self.dualshock4_2.getRawButtonPressed(dualshock4_map["cross"]):
                     self.algae_intake.target_position = "HOMING"
-                    print(position, constants.ARM_POSITIONS[position])
                 self.algae_intake.go_to_position(constants.ARM_POSITIONS[self.algae_intake.target_position])
             else:
                 self.algae_intake.move_arm_by_duty_cycle(
