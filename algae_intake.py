@@ -2,25 +2,27 @@ import wpilib
 import rev
 from wpimath.controller import PIDController
 import constants
+from typing import Literal
 
 class AlgaeIntake:
     def __init__(self):
         self.intake_motion = rev.SparkMax(constants.INTAKE_MOTION_ID, rev.SparkLowLevel.MotorType.kBrushless)
         self.intake_rotation = rev.SparkMax(constants.INTAKE_ROTATION_ID, rev.SparkLowLevel.MotorType.kBrushless)
-
-        self.encoder_virtual = 0
-
         self.limit_switch = wpilib.DigitalInput(constants.LIMIT_SWITCH_INTAKE_PORT)
-
         self.pid = PIDController(*constants.PID_INTAKE)
-
         self.pid.setTolerance(1,1)
+        self.setpoint = 10
+        self.arm_control_type: Literal["position", "duty_cycle"] = "position"
 
-        self.control_val = 0
+    def teleopPeriodic(self):
+        if self.arm_control_type == "position":
+            motor_response = self.pid.calculate(self.intake_motion.getEncoder().getPosition(), self.setpoint)
+            if(self.is_arm_homed() and motor_response > 0): motor_response = 0
+            
+            self.intake_motion.set(motor_response)
 
     def go_to_position(self,setpoint):
-        self.intake_motion.set(self.pid.calculate(self.intake_motion.getEncoder().getPosition(), setpoint))
-        #print(self.pid.calculate(self.intake_motion.getEncoder().getPosition(), setpoint))
+        self.setpoint = setpoint
 
     def reset_intake(self):
         self.intake_motion.getEncoder().setPosition(0)
@@ -41,7 +43,7 @@ class AlgaeIntake:
     def testeI(self):
         print(self.intake_motion.getEncoder().getPosition())
 
-    def position(self):
+    def is_at_setpoint(self):
         return self.pid.atSetpoint()
     
     def intake_absorb(self):
@@ -53,12 +55,6 @@ class AlgaeIntake:
     def intake_expel(self):
         self.intake_rotation.set(-0.4)
 
-    def setControlVal(self, control_val) -> None:
-        self.control_val = control_val
-    
-    def getControlVal(self) -> float:
-        return self.control_val
-    
     def is_arm_homed(self):
         return not self.down_limit_switch.get()
     

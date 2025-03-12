@@ -60,6 +60,7 @@ class TestRobot(wpilib.TimedRobot):
         
     def teleopPeriodic(self):
         self.updateControlType()
+        self.algae_intake.teleopPeriodic()
 
         if self.dualshock4.getRawButton(dualshock4_map["cross"]):
             self.drivetrain.slowdrive(
@@ -97,28 +98,13 @@ class TestRobot(wpilib.TimedRobot):
         else:
             self.coral_intake.disable()
 
-        #self.intake.readjust_encoder()
-        wpilib.SmartDashboard.putBoolean("Limit Switch", self.algae_intake.limit_switch.get())
-
         if(self.arm_control_type == "position"):
-
-            # Intake control position
             if self.dualshock4_2.getRawButtonPressed(dualshock4_map["triangle"]):
-                self.algae_intake.setControlVal(2)
-                
+                self.algae_intake.intake_removing_position()
             if self.dualshock4_2.getRawButtonPressed(dualshock4_map["circle"]):
-                self.algae_intake.setControlVal(1)
-                
+                self.algae_intake.intake_receiving_position()
             if self.dualshock4_2.getRawButtonPressed(dualshock4_map["cross"]):
-                self.algae_intake.setControlVal(0)
-            
-            match self.algae_intake.getControlVal():
-                case 0:
-                    self.algae_intake.intake_reset_position()
-                case 1:
-                    self.algae_intake.intake_receiving_position()
-                case 2:
-                    self.algae_intake.intake_removing_position()
+                self.algae_intake.intake_reset_position()
         else:
             self.algae_intake.move_arm_by_joystick(
                 self.dualshock4_2.getRawAxis(dualshock4_map["right-y-axis"])
