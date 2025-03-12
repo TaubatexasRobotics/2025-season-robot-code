@@ -68,13 +68,14 @@ class TestRobot(wpilib.TimedRobot):
         self.run_mechanisms_method(self.mechanisms, "robotPeriodic")
 
     def autonomousInit(self):
-        self.drivetrain.safetyMode()
-        self.drivetrain.reset()
+        self.run_mechanisms_method(self.mechanisms, "dashboardInit", self.dashboard)
+        self.run_mechanisms_method(self.mechanisms, "autonomousInit")
 
     def autonomousPeriodic(self):
         self.drivetrain.arcadeDriveAlign(3)
 
     def teleopInit(self):
+        self.run_mechanisms_method(self.mechanisms, "dashboardInit", self.dashboard)
         self.drivetrain.safetyMode()
         self.algae_intake.reset_intake()
         
@@ -129,7 +130,7 @@ class TestRobot(wpilib.TimedRobot):
                     self.algae_intake.target_position = "RECEIVING"
                 if self.dualshock4_2.getRawButton(dualshock4_map["cross"]):
                     self.algae_intake.target_position = "HOMING"
-                self.algae_intake.go_to_position(constants.ARM_POSITIONS[self.algae_intake.target_position])
+                self.algae_intake.go_to_position(self.algae_intake.arm_positions[self.algae_intake.target_position])
             else:
                 self.algae_intake.move_arm_by_duty_cycle(
                     self.dualshock4_2.getRawAxis(dualshock4_map["right-y-axis"])

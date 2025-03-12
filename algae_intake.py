@@ -15,10 +15,17 @@ class AlgaeIntake:
         self.setpoint = 10
         self.arm_encoder = self.arm_pivot_motor.getEncoder()
         self.arm_control_type: Literal["position", "duty_cycle"] = "position"
+        self.arm_positions = constants.ARM_POSITIONS
 
         self.target_position: Literal["REMOVING", "RECEIVING", "HOMING"] = "HOMING"
 
+    def dashboardInit(self, dashboard) -> None:
+        self.arm_positions["HOMING"] = dashboard.putNumber("Homing Position", constants.ARM_POSITIONS["HOMING"])
+        self.arm_positions["RECEIVING"] = dashboard.putNumber("Receiving Position", constants.ARM_POSITIONS["RECEIVING"])
+        self.arm_positions["REMOVING"] = dashboard.putNumber("Removing Position", constants.ARM_POSITIONS["REMOVING"])
+
     def updateDashboard(self, dashboard) -> None:
+        dashboard.putData("PID Intake Arm", self.pid)
         dashboard.putNumber("Arm Angle", self.arm_encoder.getPosition())
         dashboard.putBoolean("Arm on position mode", self.arm_control_type == "position")
         dashboard.putBoolean("Arm on duty cycle mode", self.arm_control_type == "duty_cycle")
@@ -26,6 +33,10 @@ class AlgaeIntake:
         dashboard.putNumber("Setpoint", self.setpoint)
         dashboard.putNumber("Motor Response", self.motor_response)
         dashboard.putBoolean("Limit Switch", self.lower_limit_switch.get())
+
+        self.arm_positions["HOMING"] = dashboard.getNumber("Homing Position", constants.ARM_POSITIONS["HOMING"])
+        self.arm_positions["RECEIVING"] = dashboard.getNumber("Receiving Position", constants.ARM_POSITIONS["RECEIVING"])
+        self.arm_positions["REMOVING"] = dashboard.getNumber("Removing Position", constants.ARM_POSITIONS["REMOVING"])
 
     def robotPeriodic(self):
         self.update_encoder()

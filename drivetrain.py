@@ -33,6 +33,9 @@ class Drivetrain:
         self.navx = AHRS.create_spi()
         self.navx.reset()
 
+        self.pulsos_p_m_r = 4753
+        self.pulsos_p_m_l = 2839
+
         self.field = wpilib.Field2d()
         rotation = wpimath.geometry.Rotation2d.fromDegrees(self.navx.getAngle())
         initial_pose = wpimath.geometry.Pose2d(*constants.INITIAL_POSE)
@@ -44,11 +47,12 @@ class Drivetrain:
 
         self.camera = AprilTagCamera(constants.PHOTONVISION_CAMERA_NAME) 
 
-        wpilib.SmartDashboard.putData("PID Angular Drivetrain", self.pid_angular)
+        # wpilib.SmartDashboard.putData("PID Angular Drivetrain", self.pid_angular)
+
+    def updateDashboard(self, dashboard) -> None:
+        dashboard.putData("Field", self.field) 
 
     def updateData(self) -> None:
-        self.pulsos_p_m_r = 4753
-        self.pulsos_p_m_l = 2839
         self.left_pulses = self.l_encoder.get()
         self.right_pulses = self.r_encoder.get()
         self.left_position = self.left_pulses / self.pulsos_p_m_l
