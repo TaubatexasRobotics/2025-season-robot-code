@@ -67,55 +67,62 @@ class TestRobot(wpilib.TimedRobot):
         self.algae_intake.reset_intake()
         
     def teleopPeriodic(self):
-        self.updateControlType()
-        self.algae_intake.teleopPeriodic()
+        try:
+            if self.dualshock4.getRawButton(dualshock4_map["cross"]):
+                self.drivetrain.slowdrive(
+                    self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
+                    self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
+                    -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
+                )
+            elif self.dualshock4.getRawButton(dualshock4_map["square"]):
+                self.drivetrain.turnToDegrees()
+            else:
+                self.drivetrain.arcadeDrive(
+                    self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
+                    self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
+                    -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
+                )
+        except Exception as e:
+            print(e)
 
-        if self.dualshock4.getRawButton(dualshock4_map["cross"]):
-            self.drivetrain.slowdrive(
-                self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
-                self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
-                -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
-            )
-        elif self.dualshock4.getRawButton(dualshock4_map["square"]):
-            self.drivetrain.turnToDegrees()
-        else:
-            self.drivetrain.arcadeDrive(
-                self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
-                self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
-                -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
-            )
-        
-        if self.dualshock4_2.getPOV() == 0:
-            self.climber.climbUp()
-        elif self.dualshock4_2.getPOV() == 180:
-            self.climber.climbDown()
-        else:
-            self.climber.idle()
-        
-        if self.dualshock4_2.getRawButton(dualshock4_map["l2"]):
-            self.algae_intake.intake_expel()
-        elif self.dualshock4_2.getRawButton(dualshock4_map["r2"]): 
-            self.algae_intake.intake_absorb()
-        else:
-            self.algae_intake.deactivate_intake()
-        
-        if self.dualshock4_2.getRawButton(dualshock4_map["l1"]):
-            self.coral_intake.enable()
-        elif self.dualshock4_2.getRawButton(dualshock4_map["r1"]):
-            self.coral_intake.invert()
-        else:
-            self.coral_intake.disable()
 
-        if(self.arm_control_type == "position"):
-            if self.dualshock4_2.getRawButtonPressed(dualshock4_map["triangle"]):
-                position = "REMOVING"
-            if self.dualshock4_2.getRawButtonPressed(dualshock4_map["circle"]):
-                position = "RECEIVING"
-            if self.dualshock4_2.getRawButtonPressed(dualshock4_map["cross"]):
-                position = "HOMING"
-            self.algae_intake.go_to_position(constants.ARM_POSITIONS[position])
-        else:
-            self.algae_intake.move_arm_by_joystick(
-                self.dualshock4_2.getRawAxis(dualshock4_map["right-y-axis"])
-            )
+        try:
+            self.updateControlType()
+            self.algae_intake.teleopPeriodic()
+
+            if self.dualshock4_2.getPOV() == 0:
+                self.climber.climbUp()
+            elif self.dualshock4_2.getPOV() == 180:
+                self.climber.climbDown()
+            else:
+                self.climber.idle()
+            
+            if self.dualshock4_2.getRawButton(dualshock4_map["l2"]):
+                self.algae_intake.intake_expel()
+            elif self.dualshock4_2.getRawButton(dualshock4_map["r2"]): 
+                self.algae_intake.intake_absorb()
+            else:
+                self.algae_intake.deactivate_intake()
+            
+            if self.dualshock4_2.getRawButton(dualshock4_map["l1"]):
+                self.coral_intake.enable()
+            elif self.dualshock4_2.getRawButton(dualshock4_map["r1"]):
+                self.coral_intake.invert()
+            else:
+                self.coral_intake.disable()
+
+            if(self.arm_control_type == "position"):
+                if self.dualshock4_2.getRawButtonPressed(dualshock4_map["triangle"]):
+                    position = "REMOVING"
+                if self.dualshock4_2.getRawButtonPressed(dualshock4_map["circle"]):
+                    position = "RECEIVING"
+                if self.dualshock4_2.getRawButtonPressed(dualshock4_map["cross"]):
+                    position = "HOMING"
+                self.algae_intake.go_to_position(constants.ARM_POSITIONS[position])
+            else:
+                self.algae_intake.move_arm_by_joystick(
+                    self.dualshock4_2.getRawAxis(dualshock4_map["right-y-axis"])
+                )
+        except Exception as e:
+            print(e)
 
