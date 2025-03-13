@@ -1,67 +1,78 @@
 import wpilib
 import rev
 import constants
+from typing import Literal
 from wpimath.controller import PIDController
 
 class AlgaeIntake:
-    def __init__(self) -> None:
-        self.intake_motion = rev.SparkMax(constants.INTAKE_MOTION_ID, rev.SparkLowLevel.MotorType.kBrushless)
-        self.intake_rotation = rev.SparkMax(constants.INTAKE_ROTATION_ID, rev.SparkLowLevel.MotorType.kBrushless)
-
-        self.limit_switch = wpilib.DigitalInput(constants.LIMIT_SWITCH_INTAKE_PORT)
+    def __init__(self):
+        self.arm_pivot_motor = rev.SparkMax(constants.INTAKE_MOTION_ID, rev.SparkLowLevel.MotorType.kBrushless)
+        self.rotation_motor = rev.SparkMax(constants.INTAKE_ROTATION_ID, rev.SparkLowLevel.MotorType.kBrushless)
+        self.lower_limit_switch = wpilib.DigitalInput(constants.LIMIT_SWITCH_INTAKE_PORT)
         self.pid = PIDController(*constants.PID_INTAKE)
-        self.pid_config = self.intake_motion.getClosedLoopController()
-        self.pid.setTolerance(1, 1)
-        self.encoder = self.intake_motion.getEncoder()
-        self.control_val = 0
+        self.motor_response = 0
+        self.pid.setTolerance(1,1)
+        self.setpoint = 10
+        self.arm_encoder = self.arm_pivot_motor.getEncoder()
+        self.arm_control_type: Literal["position", "duty_cycle"] = "position"
+        self.arm_positions = constants.ARM_POSITIONS
 
-    def go_to_position(self, setpoint: float) -> None:
-        self.intake_motion.set(self.pid.calculate(self.encoder.getPosition(), setpoint))
+        self.target_position: Literal["REMOVING", "RECEIVING", "HOMING"] = "HOMING"
 
-    def reset_intake(self) -> None:
-        self.encoder.setPosition(0)
-        self.set_angle_position(0)
+    def dashboardInit(self, dashboard) -> None:
+        self.arm_positions["HOMING"] = dashboard.putNumber("Homing Position", constants.ARM_POSITIONS["HOMING"])
+        self.arm_positions["RECEIVING"] = dashboard.putNumber("Receiving Position", constants.ARM_POSITIONS["RECEIVING"])
+        self.arm_positions["REMOVING"] = dashboard.putNumber("Removing Position", constants.ARM_POSITIONS["REMOVING"])
 
-    def reajust_encoder(self) -> None:
-        if self.arm_is_at_minimal_position():
-            self.reset_intake()
+    def updateDashboard(self, dashboard) -> None:
+        dashboard.putData("PID Intake Arm", self.pid)
+        dashboard.putNumber("Arm Angle", self.arm_encoder.getPosition())
+        dashboard.putBoolean("Arm on position mode", self.arm_control_type == "position")
+        dashboard.putBoolean("Arm on duty cycle mode", self.arm_control_type == "duty_cycle")
+        dashboard.putNumber("Setpoint", self.setpoint)  
+        dashboard.putNumber("Motor Response", self.motor_response)
+        dashboard.putBoolean("Limit Switch", self.lower_limit_switch.get())
 
-    def intake_receiving_position(self) -> None:
-        self.go_to_position(30)
-        
-    def intake_removing_position(self) -> None:
-        self.go_to_position(50)
-        
-    def intake_reset_position(self) -> None:
-        self.go_to_position(0)
-        
-    def intake_absorb(self) -> None:
-        self.intake_rotation.set(0.4)
+        self.arm_positions["HOMING"] = dashboard.getNumber("Homing Position", constants.ARM_POSITIONS["HOMING"])
+        self.arm_positions["RECEIVING"] = dashboard.getNumber("Receiving Position", constants.ARM_POSITIONS["RECEIVING"])
+        self.arm_positions["REMOVING"] = dashboard.getNumber("Removing Position", constants.ARM_POSITIONS["REMOVING"])
 
-    def deactivate_intake(self) -> None:
-        self.intake_rotation.set(0)
+    def robotPeriodic(self):
+        self.update_encoder()
 
-    def intake_expel(self) -> None:
-        self.intake_rotation.set(-0.4)
+    def teleopPeriodic(self):
+        if self.arm_control_type == "position":
+            self.motor_response = self.pid.calculate(self.arm_encoder.getPosition(), self.setpoint)
+            if(self.is_arm_homed() and motor_response > 0): motor_response = 0
+            
+            self.arm_pivot_motor.set(self.motor_response)
 
-    def set_control_val(self, control_val: float) -> None:
-        self.control_val = control_val
+    def go_to_position(self, setpoint):
+        self.setpoint = setpoint
+
+    def reset_intake(self):
+        self.arm_encoder.setPosition(0)
+
+    def update_encoder(self):
+        if self.is_arm_homed():
+            self.arm_encoder.setPosition(0)
+
+    def is_at_setpoint(self):
+        return self.pid.atSetpoint()
     
-    def get_control_val(self) -> float:
-        return self.control_val
-    
+    def intake_absorb(self):
+        self.rotation_motor.set(constants.INTAKE_ROTATION_SPEED)
+
+    def deactivate_intake(self):
+        self.rotation_motor.set(0)
+
+    def intake_expel(self):
+        self.rotation_motor.set(-constants.INTAKE_ROTATION_SPEED)
+
     def is_arm_homed(self):
-        return not self.down_limit_switch.get()
+        return not self.lower_limit_switch.get()
     
     def move_arm_by_duty_cycle(self, axis_value:float) -> None:
         if(self.is_arm_homed() and axis_value > 0): return
-        self.set_angle_duty_cycle(axis_value*0.5)
-        
-    def set_angle_duty_cycle(self, duty_cycle: float) -> None:
-        self.pid_config.setReference(duty_cycle, rev.SparkLowLevel.ControlType.kDutyCycle)
-
-    def set_angle_smart_motion(self, angle: float) -> None:
-        self.pid_config.setReference(angle, rev.SparkLowLevel.ControlType.kSmartMotion)
-
-    def set_angle_position(self, angle: float) -> None:
-        self.pid_config.setReference(angle, rev.SparkLowLevel.ControlType.kPosition)
+        self.motor_response = axis_value*0.5
+        self.arm_pivot_motor.set(self.motor_response)
