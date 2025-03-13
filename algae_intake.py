@@ -43,7 +43,7 @@ class AlgaeIntake:
     def teleopPeriodic(self):
         if self.arm_control_type == "position":
             self.motor_response = self.pid.calculate(self.arm_encoder.getPosition(), self.setpoint)
-            if(self.is_arm_homed() and motor_response > 0): motor_response = 0
+            if(self.is_arm_homed() and self.motor_response > 0): self.motor_response = 0
             
             self.arm_pivot_motor.set(self.motor_response)
 
