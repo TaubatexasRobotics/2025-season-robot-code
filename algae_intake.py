@@ -50,20 +50,18 @@ class AlgaeIntake:
     def get_control_val(self) -> float:
         return self.control_val
     
-    def arm_is_at_minimal_position(self) -> bool:
+    def is_arm_homed(self):
         return not self.down_limit_switch.get()
     
-    def move_arm_by_joystick(self, axis_value: float) -> None:
-        if(abs(axis_value) < 0.15): return
-        if(self.is_homed() and axis_value > 0): return
-
-        self.set_angle_duty_cycle(axis_value * 0.5)
-
+    def move_arm_by_duty_cycle(self, axis_value:float) -> None:
+        if(self.is_arm_homed() and axis_value > 0): return
+        self.set_angle_duty_cycle(axis_value*0.5)
+        
     def set_angle_duty_cycle(self, duty_cycle: float) -> None:
-        self.pid_config.setReference(duty_cycle, rev.SparkLowLevel.kDutyCycle)
+        self.pid_config.setReference(duty_cycle, rev.SparkLowLevel.ControlType.kDutyCycle)
 
     def set_angle_smart_motion(self, angle: float) -> None:
-        self.pid_config.setReference(angle, rev.SparkLowLevel.kSmartMotion)
+        self.pid_config.setReference(angle, rev.SparkLowLevel.ControlType.kSmartMotion)
 
     def set_angle_position(self, angle: float) -> None:
-        self.pid_config.setReference(angle, rev.SparkLowLevel.kPosition)
+        self.pid_config.setReference(angle, rev.SparkLowLevel.ControlType.kPosition)

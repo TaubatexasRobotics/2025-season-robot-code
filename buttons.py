@@ -58,12 +58,12 @@ g_xbox_360_map = {
     "pov-down": 180,
     "pov-left": 270,
     "pov-right": 90,
-    "left-x-stick": 0,
-    "left-y-stick": 1,
+    "left-x-axis": 0,
+    "left-y-axis": 1,
     "left-trigger-axis": 2, 
     "right-trigger-axis": 3, 
-    "right-y-stick": 5,
-    "right-x-stick": 4,
+    "right-y-axis": 5,
+    "right-x-axis": 4,
 }
 
 # Generic steering wheel controller (generic Xbox 360 controller)
@@ -98,10 +98,10 @@ xbox_one_map = {
     "pov-down": 180,
     "pov-left": 270,
     "pov-right": 90,
-    "left-x-stick": 0,
-    "left-y-stick": 1,
+    "left-x-axis": 0,
+    "left-y-axis": 1,
     "left-trigger-axis": 2, 
     "right-trigger-axis": 3, 
-    "right-y-stick": 5,
-    "right-x-stick": 4,
+    "right-y-axis": 5,
+    "right-x-axis": 4,
 }
