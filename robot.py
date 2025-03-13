@@ -85,16 +85,16 @@ class TestRobot(wpilib.TimedRobot):
         try:
             if self.dualshock4.getRawButton(dualshock4_map["cross"]):
                 self.drivetrain.slowdrive(
-                    self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
                     self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
+                    self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
                     -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
                 )
             elif self.dualshock4.getRawButton(dualshock4_map["square"]):
                 self.drivetrain.turnToDegrees(180)
             else:
                 self.drivetrain.arcadeDrive(
-                    self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
                     self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
+                    self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
                     -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
                 )
         except Exception as e:
