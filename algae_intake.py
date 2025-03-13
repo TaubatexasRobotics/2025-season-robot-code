@@ -3,7 +3,7 @@ import rev
 import constants
 from typing import Literal
 from wpimath.controller import PIDController
-from pixycam import PixyCam
+#from pixycam import PixyCam
 
 class AlgaeIntake:
     def __init__(self):
@@ -19,7 +19,7 @@ class AlgaeIntake:
         self.arm_positions = constants.ARM_POSITIONS
         self.target_position: Literal["REMOVING", "RECEIVING", "HOMING"] = "HOMING"
 
-        self.pixycam = PixyCam(constants.BAUD_RATE)
+        #self.pixycam = PixyCam(constants.BAUD_RATE)
 
     def dashboardInit(self, dashboard) -> None:
         self.arm_positions["HOMING"] = dashboard.putNumber("Homing Position", constants.ARM_POSITIONS["HOMING"])
@@ -45,13 +45,13 @@ class AlgaeIntake:
     def teleopPeriodic(self):
         if self.arm_control_type == "position":
             self.motor_response = self.pid.calculate(self.arm_encoder.getPosition(), self.setpoint)
-            if(self.is_arm_homed() and motor_response > 0): motor_response = 0
+            if(self.is_arm_homed() and self.motor_response > 0): self.motor_response = 0
             
             self.arm_pivot_motor.set(self.motor_response)
 
-    def detect_algae(self):
-        if self.pixycam.get_algae_size()[0] < constants.ALGAE_WIDTH:
-            self.go_to_position(self.arm_positions[constants.ARM_POSITIONS["HOMING"]])
+    #def detect_algae(self):
+        #if self.pixycam.get_algae_size()[0] < constants.ALGAE_WIDTH:
+            #self.go_to_position(self.arm_positions[constants.ARM_POSITIONS["HOMING"]])
 
     def go_to_position(self, setpoint):
         self.setpoint = setpoint

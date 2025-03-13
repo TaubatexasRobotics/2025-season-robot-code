@@ -4,7 +4,7 @@ import constants
 
 from climber import Climber
 from drivetrain import Drivetrain
-from buttons import dualshock4_map
+from buttons import dualshock4_map, g_xbox_360_map
 from algae_intake import AlgaeIntake
 from coral_intake import CoralIntake
 from typing import Literal
@@ -27,11 +27,11 @@ class TestRobot(wpilib.TimedRobot):
         self.steering_wheel_option = constants.SENDABLE_CHOOSER_STEERING_WHEEL_OPTION
 
     def updateControlType(self) -> Literal["position", "duty_cycle"]:
-        position_control_buttons = ["triangle", "circle", "cross"]
+        position_control_buttons = ["y", "b", "a"]
         check_is_pressed = self.dualshock4_2.getRawButton
 
         is_any_control_button_pressed = any(
-            check_is_pressed(dualshock4_map[button])
+            check_is_pressed(g_xbox_360_map[button])
             for button
             in position_control_buttons
         )
@@ -105,37 +105,37 @@ class TestRobot(wpilib.TimedRobot):
             self.algae_intake.teleopPeriodic()
 
             if self.dualshock4_2.getPOV() == 0:
-                self.climber.climbUp()
+                self.climber.climb_up()
             elif self.dualshock4_2.getPOV() == 180:
-                self.climber.climbDown()
+                self.climber.climb_down()
             else:
                 self.climber.idle()
             
-            if self.dualshock4_2.getRawButton(dualshock4_map["l2"]):
+            if self.dualshock4_2.getRawAxis(g_xbox_360_map["left-trigger-axis"]) > 0:
                 self.algae_intake.intake_expel()
-            elif self.dualshock4_2.getRawButton(dualshock4_map["r2"]): 
+            elif self.dualshock4_2.getRawAxis(g_xbox_360_map["right-trigger-axis"]) > 0: 
                 self.algae_intake.intake_absorb()
             else:
                 self.algae_intake.deactivate_intake()
             
-            if self.dualshock4_2.getRawButton(dualshock4_map["l1"]):
+            if self.dualshock4_2.getRawButton(g_xbox_360_map["lb"]):
                 self.coral_intake.enable()
-            elif self.dualshock4_2.getRawButton(dualshock4_map["r1"]):
+            elif self.dualshock4_2.getRawButton(g_xbox_360_map["rb"]):
                 self.coral_intake.invert()
             else:
                 self.coral_intake.disable()
 
             if(self.algae_intake.arm_control_type == "position"):
-                if self.dualshock4_2.getRawButton(dualshock4_map["triangle"]):
+                if self.dualshock4_2.getRawButton(g_xbox_360_map["y"]):
                     self.algae_intake.target_position = "REMOVING"
-                if self.dualshock4_2.getRawButton(dualshock4_map["circle"]):
+                if self.dualshock4_2.getRawButton(g_xbox_360_map["b"]):
                     self.algae_intake.target_position = "RECEIVING"
-                if self.dualshock4_2.getRawButton(dualshock4_map["cross"]):
+                if self.dualshock4_2.getRawButton(g_xbox_360_map["a"]):
                     self.algae_intake.target_position = "HOMING"
                 self.algae_intake.go_to_position(self.algae_intake.arm_positions[self.algae_intake.target_position])
             else:
                 self.algae_intake.move_arm_by_duty_cycle(
-                    self.dualshock4_2.getRawAxis(dualshock4_map["right-y-axis"])
+                    self.dualshock4_2.getRawAxis(g_xbox_360_map["right-x-axis"])
                 )
         except Exception as e:
             print(e)
