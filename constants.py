@@ -47,6 +47,7 @@ SENDABLE_CHOOSER_TWO_JOYSTICKS_OPTION = "Dois Controles"
 
 # PixyCam
 BAUD_RATE = 9600
+ALGAE_WIDTH = 200
 
 # Photonvision (using meters and radians)
 PHOTONVISION_CAMERA_NAME = "Microsoft_LifeCam_HD-3000"

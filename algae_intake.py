@@ -3,6 +3,7 @@ import rev
 import constants
 from typing import Literal
 from wpimath.controller import PIDController
+from pixycam import PixyCam
 
 class AlgaeIntake:
     def __init__(self):
@@ -16,8 +17,9 @@ class AlgaeIntake:
         self.arm_encoder = self.arm_pivot_motor.getEncoder()
         self.arm_control_type: Literal["position", "duty_cycle"] = "position"
         self.arm_positions = constants.ARM_POSITIONS
-
         self.target_position: Literal["REMOVING", "RECEIVING", "HOMING"] = "HOMING"
+
+        self.pixycam = PixyCam(constants.BAUD_RATE)
 
     def dashboardInit(self, dashboard) -> None:
         self.arm_positions["HOMING"] = dashboard.putNumber("Homing Position", constants.ARM_POSITIONS["HOMING"])
@@ -47,6 +49,10 @@ class AlgaeIntake:
             
             self.arm_pivot_motor.set(self.motor_response)
 
+    def detect_algae(self):
+        if self.pixycam.get_algae_size()[0] < constants.ALGAE_WIDTH:
+            self.go_to_position(self.arm_positions[constants.ARM_POSITIONS["HOMING"]])
+
     def go_to_position(self, setpoint):
         self.setpoint = setpoint
 
@@ -74,5 +80,5 @@ class AlgaeIntake:
     
     def move_arm_by_duty_cycle(self, axis_value:float) -> None:
         if(self.is_arm_homed() and axis_value > 0): return
-        self.motor_response = axis_value*0.5
+        self.motor_response = axis_value * 0.5
         self.arm_pivot_motor.set(self.motor_response)
