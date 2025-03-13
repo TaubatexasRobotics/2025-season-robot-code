@@ -47,8 +47,6 @@ class Drivetrain:
 
         self.camera = AprilTagCamera(constants.PHOTONVISION_CAMERA_NAME) 
 
-        #wpilib.SmartDashboard.putData("PID Angular Drivetrain", self.pid_angular)
-
     def updateDashboard(self, dashboard) -> None:
         dashboard.putData("Field", self.field) 
 
