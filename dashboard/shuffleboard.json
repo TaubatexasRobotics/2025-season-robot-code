@@ -5,16 +5,29 @@
       "autoPopulate": true,
       "autoPopulatePrefix": "SmartDashboard/",
       "widgetPane": {
-        "gridSize": 128.0,
+        "gridSize": 64.0,
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
+          "0,7": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Responsiveness Test",
+              "_title": "Responsiveness Test",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
           "0,0": {
             "size": [
-              6,
-              4
+              11,
+              6
             ],
             "content": {
               "_type": "Field",
@@ -27,110 +40,38 @@
               "Visuals/Show Outside Circles": false
             }
           },
-          "9,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Setpoint",
-              "_title": "Setpoint",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "6,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Motor Response",
-              "_title": "Motor Response",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "6,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Responsiveness Test",
-              "_title": "Responsiveness Test",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "6,2": {
+          "11,0": {
             "size": [
               2,
-              2
+              8
             ],
             "content": {
               "_type": "List Layout",
-              "_title": "Positions",
+              "_title": "Arm",
               "_glyph": 149,
               "_showGlyph": false,
               "Layout/Label position": "BOTTOM",
               "_children": [
                 {
                   "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/Homing Position",
-                  "_title": "Homing Position",
+                  "_source0": "network_table:///SmartDashboard/Arm Angle",
+                  "_title": "Arm Angle",
                   "_glyph": 148,
                   "_showGlyph": false
                 },
-                {
-                  "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/Removing Position",
-                  "_title": "Removing Position",
-                  "_glyph": 148,
-                  "_showGlyph": false
-                },
-                {
-                  "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/Receiving Position",
-                  "_title": "Receiving Position",
-                  "_glyph": 148,
-                  "_showGlyph": false
-                }
-              ]
-            }
-          },
-          "8,2": {
-            "size": [
-              1,
-              2
-            ],
-            "content": {
-              "_type": "PID Controller",
-              "_source0": "network_table:///SmartDashboard/PID Intake Arm",
-              "_title": "PID Intake Arm",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "8,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "List Layout",
-              "_title": "Arm control mode",
-              "_glyph": 149,
-              "_showGlyph": false,
-              "Layout/Label position": "BOTTOM",
-              "_children": [
                 {
                   "_type": "Boolean Box",
                   "_source0": "network_table:///SmartDashboard/Arm on position mode",
                   "_title": "Arm on position mode",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///SmartDashboard/Limit Switch",
+                  "_title": "Limit Switch",
                   "_glyph": 148,
                   "_showGlyph": false,
                   "Colors/Color when true": "#7CFC00FF",
@@ -146,49 +87,44 @@
                   "Colors/Color when false": "#8B0000FF"
                 },
                 {
-                  "_type": "Boolean Box",
-                  "_source0": "network_table:///SmartDashboard/Limit Switch",
-                  "_title": "Limit Switch",
+                  "_type": "PID Controller",
+                  "_source0": "network_table:///SmartDashboard/PID Intake Arm",
+                  "_title": "PID Intake Arm",
                   "_glyph": 148,
-                  "_showGlyph": false,
-                  "Colors/Color when true": "#7CFC00FF",
-                  "Colors/Color when false": "#8B0000FF"
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Motor Response",
+                  "_title": "Motor Response",
+                  "_glyph": 148,
+                  "_showGlyph": false
                 }
               ]
             }
           },
-          "7,0": {
+          "15,0": {
             "size": [
-              1,
-              2
+              3,
+              6
             ],
             "content": {
               "_type": "List Layout",
-              "_title": "List Layout",
+              "_title": "Drivetrain",
               "_glyph": 149,
               "_showGlyph": false,
               "Layout/Label position": "BOTTOM",
               "_children": [
                 {
-                  "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/Encoder Right",
-                  "_title": "Encoder Right",
+                  "_type": "Gyro",
+                  "_source0": "network_table:///SmartDashboard/navX",
+                  "_title": "navX",
                   "_glyph": 148,
-                  "_showGlyph": false
-                },
-                {
-                  "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/Arm Angle",
-                  "_title": "Arm Angle",
-                  "_glyph": 148,
-                  "_showGlyph": false
-                },
-                {
-                  "_type": "Text View",
-                  "_source0": "network_table:///SmartDashboard/Arm Encoder",
-                  "_title": "Arm Encoder",
-                  "_glyph": 148,
-                  "_showGlyph": false
+                  "_showGlyph": false,
+                  "Visuals/Major tick spacing": 45.0,
+                  "Visuals/Starting angle": 180.0,
+                  "Visuals/Show tick mark ring": true,
+                  "Visuals/Counter clockwise": false
                 },
                 {
                   "_type": "Text View",
@@ -196,21 +132,88 @@
                   "_title": "Encoder Left",
                   "_glyph": 148,
                   "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Encoder Right",
+                  "_title": "Encoder Right",
+                  "_glyph": 148,
+                  "_showGlyph": false
                 }
               ]
             }
           },
-          "9,3": {
+          "13,0": {
             "size": [
-              1,
+              2,
+              5
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Arm positions",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Homing Position",
+                  "_title": "Homing Position",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Receiving Position",
+                  "_title": "Receiving Position",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Removing Position",
+                  "_title": "Removing Position",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Setpoint",
+                  "_title": "Setpoint",
+                  "_glyph": 148,
+                  "_showGlyph": false
+                }
+              ]
+            }
+          },
+          "7,7": {
+            "size": [
+              4,
               1
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/navX/Value",
-              "_title": "navX/Value",
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Is position move blocked",
+              "_title": "Is position move blocked",
               "_glyph": 148,
-              "_showGlyph": false
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "7,6": {
+            "size": [
+              4,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Is duty_cycle move blocked",
+              "_title": "Is duty_cycle move blocked",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
             }
           }
         }
@@ -221,7 +224,7 @@
       "autoPopulate": true,
       "autoPopulatePrefix": "LiveWindow/",
       "widgetPane": {
-        "gridSize": 128.0,
+        "gridSize": 64.0,
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,

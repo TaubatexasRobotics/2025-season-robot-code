@@ -43,7 +43,9 @@ class AlgaeIntake:
     def teleopPeriodic(self):
         if self.arm_control_type == "position":
             self.motor_response = self.pid.calculate(self.arm_encoder.getPosition(), self.setpoint)
-            if(self.is_arm_homed() and self.motor_response > 0): self.motor_response = 0
+            wpilib.SmartDashboard.putBoolean("Is position move blocked", self.is_blocked_move(self.motor_response))
+            wpilib.SmartDashboard.putBoolean("Is duty_cycle move blocked", False)
+            if(self.is_blocked_move(self.motor_response)): self.motor_response = 0
             
             self.arm_pivot_motor.set(self.motor_response)
 
@@ -72,8 +74,15 @@ class AlgaeIntake:
     def is_arm_homed(self):
         return not self.lower_limit_switch.get()
     
+    def is_blocked_move(self, response:float) -> bool:
+        return self.is_arm_homed() and response < 0
+    
     def move_arm_by_duty_cycle(self, axis_value:float) -> None:
-        if(self.is_arm_homed() and axis_value > 0): return
-        self.motor_response = axis_value*0.5
+        self.motor_response = axis_value * 0.8
+        wpilib.SmartDashboard.putBoolean("Is duty_cycle move blocked", self.is_blocked_move(self.motor_response))
+        wpilib.SmartDashboard.putBoolean("Is position move blocked", False)
+
+        if(self.is_blocked_move(self.motor_response)): 
+            self.motor_response = 0
         self.arm_pivot_motor.set(self.motor_response)
         
