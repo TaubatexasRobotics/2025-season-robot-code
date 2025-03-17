@@ -18,3 +18,8 @@ class Climber:
     def idle(self):
         self.climber.set(0)
         
+    def startMotor(self) -> None:
+        self.climber.setNeutralMode(phoenix5.NeutralMode.Coast)
+
+    def finishMotor(self) -> None:
+        self.climber.setNeutralMode(phoenix5.NeutralMode.Brake)

@@ -19,6 +19,12 @@ class Drivetrain:
         self.right_front_motor = phoenix5.WPI_VictorSPX(constants.RIGHT_FRONT_ID)
         self.right_back_motor = phoenix5.WPI_VictorSPX(constants.RIGHT_BACK_ID)
 
+        #self.left_front_motor.setNeutralMode(phoenix5.NeutralMode.Brake)
+        #self.left_back_motor.setNeutralMode(phoenix5.NeutralMode.Brake)
+
+        #self.right_front_motor.setNeutralMode(phoenix5.NeutralMode.Brake)
+        #self.right_back_motor.setNeutralMode(phoenix5.NeutralMode.Brake)
+
         # Group left and right motors
         self.left = wpilib.MotorControllerGroup(self.left_front_motor, self.left_back_motor)
         self.right = wpilib.MotorControllerGroup(self.right_front_motor, self.right_back_motor)
@@ -60,6 +66,9 @@ class Drivetrain:
         wpilib.SmartDashboard.putNumber("Encoder Left", self.left_pulses)
         wpilib.SmartDashboard.putNumber("Encoder Right", self.right_pulses)
         wpilib.SmartDashboard.putData("navX", self.navx)
+        
+        self.timer = wpilib.Timer()
+        self.timer.reset()
 
     def reset(self) -> None:
         self.drivetrain.arcadeDrive(0, 0)
@@ -73,6 +82,15 @@ class Drivetrain:
 
         # Use arcade drive to move the robot
         self.drivetrain.arcadeDrive(move_value, turn)
+    
+    def myArcadeDrive(self, fwd_left, fwd_right, turn) -> None:
+        forward = -(fwd_left - fwd_right)
+
+        left = forward + turn
+        right = forward - turn
+        
+        self.left.set(left)
+        self.right.set(right * 0.8)
 
     def arcadeDriveAlign(self, tag: int) -> None:
         yaw = self.camera.getYaw(tag)

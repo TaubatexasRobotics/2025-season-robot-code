@@ -30,13 +30,16 @@ class AlgaeIntake:
             self.intake_motion.getEncoder().setPosition(0)
 
     def intake_receiving_position(self):
-        self.go_to_position(30)
+        self.go_to_position(25)
         
     def intake_removing_position(self):
         self.go_to_position(50)
         
     def intake_reset_position(self):
-        self.go_to_position(0)
+        self.go_to_position(3)
+
+    def reset_intake(self):
+        self.intake_motion.set(-1)
         
     def testeI(self):
         print(self.intake_motion.getEncoder().getPosition())

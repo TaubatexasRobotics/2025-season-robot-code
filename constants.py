@@ -41,3 +41,6 @@ PHOTONVISION_CAMERA_NAME = "Microsoft_LifeCam_HD-3000"
 CAMERA_HEIGHT_METERS = wpimath.units.inchesToMeters(24)
 TARGET_HEIGHT_METERS = wpimath.units.feetToMeters(5)
 CAMERA_PITCH_RADIANS = wpimath.units.degreesToRadians(0)
+
+# Field measurements
+L1_DISTANCE = 2
