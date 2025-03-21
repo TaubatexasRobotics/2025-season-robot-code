@@ -38,7 +38,6 @@ class TestRobot(wpilib.TimedRobot):
         wpilib.SmartDashboard.putData(self.autochooser)
 
         self.timer = wpilib.Timer()
-        self.coral_timer = wpilib.Timer()
         CameraServer().launch()
 
     def robotPeriodic(self):
@@ -53,7 +52,6 @@ class TestRobot(wpilib.TimedRobot):
         self.climber.startMotor()
         self.timer.reset()
         self.timer.start()
-        self.coral_timer.reset()
 
         self.match_mode = self.chooser.getSelected()
         self.whichAutonomous = self.autochooser.getSelected()
@@ -68,30 +66,11 @@ class TestRobot(wpilib.TimedRobot):
                 self.drivetrain.drivetrain.arcadeDrive(-0.5, 0)
                 if self.timer.get() >= 8 and self.timer.get() < 10:
                     self.coral_intake.invert()
-            case 2:
-                if self.timer.get() < 5:
-                    self.drivetrain.drivetrain.arcadeDrive(-0.5, 0)
-                elif self.timer.get() >= 5 and self.timer.get() < 8:
-                    self.drivetrain.drivetrain.arcadeDrive(0, -0.5)
-                elif self.timer.get() >= 8 and self.timer.get() < 10:
-                    self.coral_intake.invert()
-
-            case 3:
-                if self.timer.get() < 5:
-                    self.drivetrain.drivetrain.arcadeDrive(-0.5, 0)
-                elif self.timer.get() >= 5 and self.timer.get() < 8:
-                    self.drivetrain.drivetrain.arcadeDrive(0, 0.5)
-                elif self.timer.get() >= 8 and self.timer.get() < 10:
-                    self.coral_intake.invert()
-            case 4:
-                if self.coral_timer.get() <= 0:
-                    if self.drivetrain.left_position < 2.1:
-                        self.drivetrain.drivetrain.arcadeDrive(-0.5, 0)
-                    else:
-                        self.coral_timer.start()
                 else:
-                    if self.coral_timer.get() < 5:
-                        self.coral_intake.invert()
+                    self.coral_intake.disable()
+
+    def autonomousExit(self):
+        self.timer.reset()
 
     def teleopInit(self):
         self.drivetrain.safetyMode()
@@ -107,19 +86,21 @@ class TestRobot(wpilib.TimedRobot):
             self.climber.climber.set(-0.5)
         
     def teleopPeriodic(self):
-        if self.dualshock4.getRawButton(dualshock4_map["cross"]):
+        self.climber.isFinished()
+
+        if self.dualshock4.getRawButton(g_xbox_360_map["a"]):
             self.drivetrain.slowdrive(
-                self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
-                self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
-                -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
+                self.dualshock4.getRawAxis(g_xbox_360_map["right-trigger-axis"]),
+                self.dualshock4.getRawAxis(g_xbox_360_map["left-trigger-axis"]),
+                -self.dualshock4.getRawAxis(g_xbox_360_map["left-x-axis"]) 
             )
-        elif self.dualshock4.getRawButton(dualshock4_map["square"]):
+        elif self.dualshock4.getRawButton(g_xbox_360_map["b"]):
             self.drivetrain.turnToDegrees()
         else:
             self.drivetrain.arcadeDrive(
-                self.dualshock4.getRawAxis(dualshock4_map["right-trigger-axis"]),
-                self.dualshock4.getRawAxis(dualshock4_map["left-trigger-axis"]),
-                -self.dualshock4.getRawAxis(dualshock4_map["left-x-axis"]) 
+                self.dualshock4.getRawAxis(g_xbox_360_map["right-trigger-axis"]),
+                self.dualshock4.getRawAxis(g_xbox_360_map["left-trigger-axis"]),
+                -self.dualshock4.getRawAxis(g_xbox_360_map["left-x-axis"]) 
             )
 
         if self.dualshock4_2.getPOV() == 0:
@@ -133,8 +114,6 @@ class TestRobot(wpilib.TimedRobot):
             self.algae_intake.intake_expel()
         elif self.dualshock4_2.getRawAxis(g_xbox_360_map["right-trigger-axis"]) > 0: 
             self.algae_intake.intake_absorb()
-        elif self.dualshock4_2.getRawButton(g_xbox_360_map["x"]):
-            self.algae_intake.reset_intake()
         else:
             self.algae_intake.deactivate_intake()
         
@@ -146,17 +125,23 @@ class TestRobot(wpilib.TimedRobot):
             self.coral_intake.disable()
 
         #self.intake.readjust_encoder()
-        wpilib.SmartDashboard.putBoolean("Limit Switch", self.algae_intake.limit_switch.get())
+        #wpilib.SmartDashboard.putBoolean("Limit Switch", self.algae_intake.limit_switch.get())
 
         # Intake control position
         if self.dualshock4_2.getRawButtonPressed(g_xbox_360_map["y"]):
             self.algae_intake.setControlVal(2)
-            
+           
         if self.dualshock4_2.getRawButtonPressed(g_xbox_360_map["b"]):
             self.algae_intake.setControlVal(1)
             
         if self.dualshock4_2.getRawButtonPressed(g_xbox_360_map["a"]):
             self.algae_intake.setControlVal(0)
+
+        if self.dualshock4_2.getRawButton(g_xbox_360_map["press-left-stick"]):
+            self.algae_intake.full_min_intake()
+
+        if self.dualshock4_2.getRawButton(g_xbox_360_map["press-right-stick"]):
+            self.algae_intake.full_max_intake()
            
         match self.algae_intake.getControlVal():
             case 0:

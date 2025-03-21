@@ -10,7 +10,8 @@ class AlgaeIntake:
 
         self.encoder_virtual = 0
 
-        self.limit_switch = wpilib.DigitalInput(constants.LIMIT_SWITCH_INTAKE_PORT)
+        self.limit_switch_start = wpilib.DigitalInput(constants.LIMIT_SWITCH_START_INTAKE_PORT)
+        self.limit_switch_end = wpilib.DigitalInput(constants.LIMIT_SWITCH_END_INTAKE_PORT)
 
         self.pid = PIDController(*constants.PID_INTAKE)
 
@@ -26,20 +27,38 @@ class AlgaeIntake:
         self.intake_motion.getEncoder().setPosition(0)
 
     def reajust_encoder(self):
-        if self.limit_switch.get() is False:
+        if self.limit_switch_start.get() is False:
             self.intake_motion.getEncoder().setPosition(0)
+        elif self.limit_switch_end.get() is False:
+            self.intake_motion.getEncoder().setPosition(65)
 
     def intake_receiving_position(self):
+        self.pid.setPID(*constants.PID_INTAKE)
         self.go_to_position(25)
         
     def intake_removing_position(self):
-        self.go_to_position(50)
+        self.pid.setPID(*constants.PID_INTAKE)
+        self.go_to_position(65)
         
     def intake_reset_position(self):
+        self.pid.setPID(*constants.PID_INTAKE)
         self.go_to_position(3)
 
-    def reset_intake(self):
-        self.intake_motion.set(-1)
+    def full_min_intake(self):
+        self.pid.setPID(0, 0, 0)
+        self.control_val = 3
+        if self.limit_switch_start.get():
+            self.intake_motion.set(-0.3)
+        else:
+            self.intake_motion.set(0)
+
+    def full_max_intake(self):
+        self.pid.setPID(0, 0, 0)
+        self.control_val = 3
+        if self.limit_switch_end.get():
+            self.intake_motion.set(0.3)
+        else:
+            self.intake_motion.set(0)
         
     def testeI(self):
         print(self.intake_motion.getEncoder().getPosition())
@@ -61,3 +80,6 @@ class AlgaeIntake:
     
     def getControlVal(self) -> float:
         return self.control_val
+    
+    def get_results(self):
+        return self.limit_switch_start.get(), self.limit_switch_end.get()

@@ -16,3 +16,6 @@ class CoralIntake:
 
     def enable_half(self) -> None:
         self.motor.set(0.4)
+
+    def invert_half(self) -> None:
+        self.motor.set(-0.4)

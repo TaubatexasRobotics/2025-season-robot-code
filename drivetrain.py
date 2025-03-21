@@ -19,11 +19,11 @@ class Drivetrain:
         self.right_front_motor = phoenix5.WPI_VictorSPX(constants.RIGHT_FRONT_ID)
         self.right_back_motor = phoenix5.WPI_VictorSPX(constants.RIGHT_BACK_ID)
 
-        #self.left_front_motor.setNeutralMode(phoenix5.NeutralMode.Brake)
-        #self.left_back_motor.setNeutralMode(phoenix5.NeutralMode.Brake)
+        self.left_front_motor.setNeutralMode(phoenix5.NeutralMode.Brake)
+        self.left_back_motor.setNeutralMode(phoenix5.NeutralMode.Brake)
 
-        #self.right_front_motor.setNeutralMode(phoenix5.NeutralMode.Brake)
-        #self.right_back_motor.setNeutralMode(phoenix5.NeutralMode.Brake)
+        self.right_front_motor.setNeutralMode(phoenix5.NeutralMode.Brake)
+        self.right_back_motor.setNeutralMode(phoenix5.NeutralMode.Brake)
 
         # Group left and right motors
         self.left = wpilib.MotorControllerGroup(self.left_front_motor, self.left_back_motor)
